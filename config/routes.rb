@@ -4,5 +4,12 @@ Rails.application.routes.draw do
       get :get_by_code
     end
   end
+
+  resources :authenticate, path: :auth, only: [] do
+    collection do
+      post :login
+      post :logout
+    end
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
