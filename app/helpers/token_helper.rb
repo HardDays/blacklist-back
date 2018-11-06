@@ -1,4 +1,4 @@
-class TokenHelper
+module TokenHelper
   SALT = 'kek salt'
 
   # def self.process_token(request, user)
@@ -17,7 +17,7 @@ class TokenHelper
 
   def self.generate_register_token
     token = SecureRandom.hex[0..4]
-    token = 0000
+    token = '0000'
     return token
   end
 end

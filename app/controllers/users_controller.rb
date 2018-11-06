@@ -11,19 +11,28 @@ class UsersController < ApplicationController
   def show
     user = User.find(params[:id])
 
-    render json: user, status: :ok
+    if user
+      render json: user, status: :ok
+    else
+      render status: :not_found
+    end
   end
 
   # GET /users/get_by_code
   swagger_api :get_by_code do
     summary "Find user by code"
-    param :form, :code, :integer, :required, "Verification code"
+    param :query, :code, :string, :required, "Verification code"
     response :ok
     response :not_found
   end
   def get_by_code
-    user = User.find_by(confirmation_token: params[:code], password: "")
-    render json: user, status: :ok
+    user = User.find_by(confirmation_token: params[:code], password: ["", nil])
+
+    if user
+      render json: user, status: :ok
+    else
+      render status: :not_found
+    end
   end
 
   # POST /users
@@ -39,7 +48,7 @@ class UsersController < ApplicationController
       user = User.new(create_params)
       user.confirmation_token = token
       user.confirmation_sent_at = DateTime.now
-      if user.save(validate: false)
+      if user.save
         ConfirmationMailer.confirmation_email(params[:email], token).deliver
 
         render json: user, status: :created
@@ -65,15 +74,21 @@ class UsersController < ApplicationController
   def update
     user = User.find(params[:id])
 
-    if user.email == params[:email] and user.confirmation_token == params[:code]
-      if user.update(update_params)
-        user.update(confirmed_at: DateTime.now)
-        render json: user, status: :ok
+    ActiveRecord::Base.transaction do
+      if user.email == params[:email] and user.confirmation_token == params[:code]
+        user.confirmed_at = DateTime.now
+        user.password = params[:password]
+        user.password_confirmation = params[:password_confirmation]
+
+        if user.save
+
+          render json: user, status: :ok
+        else
+          render json: user.errors, status: :unprocessable_entity
+        end
       else
-        render json: user.errors, status: :unprocessable_entity
+        render json: {errors: [:INVALID_CODE]}, status: :forbidden
       end
-    else
-      render json: {errors: INVALID_CODE}, status: :forbidden
     end
   end
 
@@ -85,9 +100,5 @@ class UsersController < ApplicationController
   protected
   def create_params
     params.permit(:email)
-  end
-
-  def update_params
-    params.permit(:password, :password_confirmation)
   end
 end

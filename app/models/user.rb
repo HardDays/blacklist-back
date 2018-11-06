@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
+  validates :password, presence: true, if: :confirmed_at?
 
   before_save :encrypt
   validates_confirmation_of :password, message: 'NOT_MATCHED', if: :password_changed?
@@ -12,6 +13,8 @@ class User < ApplicationRecord
   end
 
   def encrypt
-    self.password = User.encrypt_password(self.password) if self.password
+    if self.password and self.password != ""
+      self.password = User.encrypt_password(self.password) if self.password
+    end
   end
 end

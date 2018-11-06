@@ -5,6 +5,37 @@
   "resourcePath": "users",
   "apis": [
     {
+      "path": "/users/get_by_code.json",
+      "operations": [
+        {
+          "summary": "Find user by code",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "code",
+              "type": "string",
+              "description": "Verification code",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Users#get_by_code",
+          "method": "get"
+        }
+      ]
+    },
+    {
       "path": "/users.json",
       "operations": [
         {
@@ -15,6 +46,77 @@
               "name": "email",
               "type": "string",
               "description": "User email",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Users#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/users/{id}.json",
+      "operations": [
+        {
+          "summary": "Get user info",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "User id",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Users#show",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/users/{id}.json",
+      "operations": [
+        {
+          "summary": "Set user password",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "User id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "email",
+              "type": "string",
+              "description": "User email",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "code",
+              "type": "integer",
+              "description": "Verification code",
               "required": true
             },
             {
@@ -37,10 +139,25 @@
               "code": 200,
               "responseModel": null,
               "message": "Ok"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
             }
           ],
-          "nickname": "Users#create",
-          "method": "post"
+          "nickname": "Users#update",
+          "method": "patch"
         }
       ]
     }
