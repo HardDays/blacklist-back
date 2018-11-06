@@ -81,8 +81,9 @@ class UsersController < ApplicationController
         user.password_confirmation = params[:password_confirmation]
 
         if user.save
+          token = TokenHelper.process_token(request, user)
 
-          render json: user, status: :ok
+          render json: {token: token.token}, status: :ok
         else
           render json: user.errors, status: :unprocessable_entity
         end

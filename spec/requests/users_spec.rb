@@ -92,7 +92,7 @@ RSpec.describe 'Users API', type: :request do
       it 'creates a user' do
         expect(json['email']).to eq('aaa@aaa.com')
         expect(user.confirmation_token).to be_kind_of(String)
-        expect(user.confirmation_sent_at).to be_kind_of(DateTime)
+        expect(user.confirmation_sent_at).not_to be_nil
       end
 
       it 'returns status code 201' do
@@ -124,9 +124,9 @@ RSpec.describe 'Users API', type: :request do
       before { patch "/users/#{user_id}", params: valid_attributes }
 
       it 'sets user password' do
-        expect(json['email']).to eq(user.email)
+        expect(json['token']).to be_kind_of(String)
         expect(user.password).to be_kind_of(String)
-        expect(user.confirmed_at).to be_kind_of(DateTime)
+        expect(user.confirmed_at).not_to be_nil
       end
 
       it 'returns status code 200' do

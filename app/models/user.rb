@@ -6,6 +6,8 @@ class User < ApplicationRecord
   validates_confirmation_of :password, message: 'NOT_MATCHED', if: :password_changed?
   attr_accessor :password_confirmation
 
+  has_many :tokens
+
   SALT = 'elite_salt'
 
   def self.encrypt_password(password)
