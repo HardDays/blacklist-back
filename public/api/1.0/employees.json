@@ -163,6 +163,11 @@
               "message": "Ok"
             },
             {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
               "code": 404,
               "responseModel": null,
               "message": "Not Found"
@@ -239,21 +244,21 @@
               "name": "first_name",
               "type": "string",
               "description": "First name",
-              "required": true
+              "required": false
             },
             {
               "paramType": "form",
               "name": "last_name",
               "type": "string",
               "description": "Last name",
-              "required": true
+              "required": false
             },
             {
               "paramType": "form",
               "name": "second_name",
               "type": "string",
               "description": "Second name",
-              "required": true
+              "required": false
             },
             {
               "paramType": "form",
@@ -347,9 +352,19 @@
               "message": "Ok"
             },
             {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
               "code": 404,
               "responseModel": null,
               "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
             }
           ],
           "nickname": "Employees#update",

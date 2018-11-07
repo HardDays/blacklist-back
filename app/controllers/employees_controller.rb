@@ -48,6 +48,7 @@ class EmployeesController < ApplicationController
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
+    response :forbidden
     response :unprocessable_entity
   end
   def create
@@ -65,9 +66,9 @@ class EmployeesController < ApplicationController
   swagger_api :update do
     summary "Update employee profile"
     param :path, :id, :integer, :required, "User id"
-    param :form, :first_name, :string, :required, "First name"
-    param :form, :last_name, :string, :required, "Last name"
-    param :form, :second_name, :string, :required, "Second name"
+    param :form, :first_name, :string, :optional, "First name"
+    param :form, :last_name, :string, :optional, "Last name"
+    param :form, :second_name, :string, :optional, "Second name"
     param :form, :birthday, :string, :optional, "Birthday"
     param_list :form, :gender, :string, :optional, "Gender", [:m, :f]
     param :form, :education, :string, :optional, "Education"
@@ -80,9 +81,11 @@ class EmployeesController < ApplicationController
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
+    response :forbidden
+    response :unprocessable_entity
   end
   def update
-    if @employee.update(company_params)
+    if @employee.update(employee_params)
       render json: @employee, status: :ok
     else
       render json: @employee.errors, status: :unprocessable_entity

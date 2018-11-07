@@ -60,6 +60,11 @@
               "message": "Ok"
             },
             {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
               "code": 404,
               "responseModel": null,
               "message": "Not Found"
@@ -136,7 +141,7 @@
               "name": "name",
               "type": "string",
               "description": "Company name",
-              "required": true
+              "required": false
             },
             {
               "paramType": "form",
@@ -174,9 +179,19 @@
               "message": "Ok"
             },
             {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
               "code": 404,
               "responseModel": null,
               "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
             }
           ],
           "nickname": "Companies#update",

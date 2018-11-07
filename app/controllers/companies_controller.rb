@@ -27,6 +27,7 @@ class CompaniesController < ApplicationController
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
+    response :forbidden
     response :unprocessable_entity
   end
   def create
@@ -44,13 +45,15 @@ class CompaniesController < ApplicationController
   swagger_api :update do
     summary "Update company profile"
     param :path, :id, :integer, :required, "User id"
-    param :form, :name, :string, :required, "Company name"
+    param :form, :name, :string, :optional, "Company name"
     param :form, :description, :string, :optional, "Company description"
     param :form, :contacts, :string, :optional, "Company contacts"
     param :form, :address, :string, :optional, "Company address"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
+    response :forbidden
+    response :unprocessable_entity
   end
   def update
     if @company.update(company_params)
