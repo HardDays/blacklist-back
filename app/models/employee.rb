@@ -4,6 +4,7 @@ class Employee < ApplicationRecord
   validates_presence_of :last_name
 
   belongs_to :user
+  has_many :jobs, dependent: :destroy
 
   enum status: [:draft, :posted]
   enum gender: [:m, :f]

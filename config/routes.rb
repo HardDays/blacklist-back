@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   end
 
   resources :companies, only: [:show, :create, :update]
-  resources :employees, only: [:show, :create, :update]
+  resources :employees, only: [:show, :create, :update] do
+    resources :jobs, only: [:create, :update]
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
