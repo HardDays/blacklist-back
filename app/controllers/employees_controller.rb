@@ -103,7 +103,7 @@ class EmployeesController < ApplicationController
   end
 
   def employee_params
-    params.permit(:first_name, :last_name, :secogit nd_name, :birthday, :gender, :education,
+    params.permit(:first_name, :last_name, :second_name, :birthday, :gender, :education,
                   :education_year, :contacts, :skills, :experience, :status, :position)
   end
 end
