@@ -6,8 +6,7 @@ class CompaniesController < ApplicationController
   # GET /companies/1
   swagger_api :show do
     summary "Get company profile"
-    param :path, :id, :integer, :required, "Company id"
-    param :query, :user_id, :integer, :required, "User id"
+    param :path, :id, :integer, :required, "User id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
@@ -63,7 +62,7 @@ class CompaniesController < ApplicationController
 
   protected
   def set_company
-    @company = user.company
+    @company = @user.company
 
     unless @company
       render status: :not_found and return

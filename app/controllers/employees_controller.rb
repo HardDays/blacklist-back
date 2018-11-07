@@ -19,8 +19,7 @@ class EmployeesController < ApplicationController
   # GET /employees/1
   swagger_api :show do
     summary "Get employee profile"
-    param :path, :id, :integer, :required, "Employee id"
-    param :query, :user_id, :integer, :required, "User id"
+    param :path, :id, :integer, :required, "User id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
@@ -92,7 +91,7 @@ class EmployeesController < ApplicationController
 
   protected
   def set_employee
-    @employee = user.employee
+    @employee = @user.employee
 
     unless @employee
       render status: :not_found

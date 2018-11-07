@@ -188,13 +188,6 @@
               "paramType": "path",
               "name": "id",
               "type": "integer",
-              "description": "Employee id",
-              "required": true
-            },
-            {
-              "paramType": "query",
-              "name": "user_id",
-              "type": "integer",
               "description": "User id",
               "required": true
             },
