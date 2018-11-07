@@ -77,7 +77,7 @@ class ImagesController < ApplicationController
       render status: :not_found and return
     end
 
-    if image.user_id == params[:user_id]
+    if @user.image_id == image.id
       image.destroy
       render status: :ok
     else
