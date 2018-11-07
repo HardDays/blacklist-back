@@ -16,8 +16,16 @@
       "description": "Images"
     },
     {
+      "path": "/api/1.0/vacancies.{format}",
+      "description": "Vacancy"
+    },
+    {
       "path": "/api/1.0/companies.{format}",
       "description": "Companies"
+    },
+    {
+      "path": "/api/1.0/jobs.{format}",
+      "description": "Jobs"
     },
     {
       "path": "/api/1.0/employees.{format}",

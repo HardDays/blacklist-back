@@ -1,0 +1,175 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://blacklist-back.herokuapp.com",
+  "resourcePath": "vacancies",
+  "apis": [
+    {
+      "path": "/companies/{company_id}/vacancies.json",
+      "operations": [
+        {
+          "summary": "Create company vacancy",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "company_id",
+              "type": "integer",
+              "description": "User id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "type": "string",
+              "description": "Description",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Vacancies#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/companies/{company_id}/vacancies/{id}.json",
+      "operations": [
+        {
+          "summary": "Update company vacancy",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "company_id",
+              "type": "integer",
+              "description": "User id",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Vacancy id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "type": "string",
+              "description": "Description",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Vacancies#update",
+          "method": "patch"
+        }
+      ]
+    },
+    {
+      "path": "/vacancies.json",
+      "operations": [
+        {
+          "summary": "Retrieve all vacancies",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Vacancies#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/vacancies/{id}.json",
+      "operations": [
+        {
+          "summary": "Retrieve vacancy info",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Vacancy id",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Vacancies#show",
+          "method": "get"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}
