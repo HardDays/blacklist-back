@@ -17,5 +17,8 @@ Rails.application.routes.draw do
       get :get_with_size
     end
   end
+
+  resources :companies, only: [:show, :create, :update]
+  resources :employees, only: [:show, :create, :update]
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
