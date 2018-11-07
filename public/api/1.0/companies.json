@@ -12,7 +12,7 @@
           "parameters": [
             {
               "paramType": "form",
-              "name": "user_id",
+              "name": "id",
               "type": "integer",
               "description": "User id",
               "required": true

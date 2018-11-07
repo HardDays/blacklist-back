@@ -19,7 +19,7 @@ class CompaniesController < ApplicationController
   # POST /companies
   swagger_api :create do
     summary "Create company profile"
-    param :form, :user_id, :integer, :required, "User id"
+    param :form, :id, :integer, :required, "User id"
     param :form, :name, :string, :required, "Company name"
     param :form, :description, :string, :optional, "Company description"
     param :form, :contacts, :string, :optional, "Company contacts"

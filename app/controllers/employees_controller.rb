@@ -32,7 +32,7 @@ class EmployeesController < ApplicationController
   # POST /employees
   swagger_api :create do
     summary "Create employee profile"
-    param :form, :user_id, :integer, :required, "User id"
+    param :form, :id, :integer, :required, "User id"
     param :form, :first_name, :string, :required, "First name"
     param :form, :last_name, :string, :required, "Last name"
     param :form, :second_name, :string, :required, "Second name"
