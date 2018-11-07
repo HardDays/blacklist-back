@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  before_action :authorize_user, only: [:update]
+  before_action :set_user, only: [:show]
   swagger_controller :users, "Users"
 
   # GET /users/id
@@ -9,26 +11,29 @@ class UsersController < ApplicationController
     response :not_found
   end
   def show
-    user = User.find(params[:id])
-
-    if user
-      render json: user, status: :ok
+    if @user
+      render json: @user, status: :ok
     else
       render status: :not_found
     end
   end
 
-  # GET /users/get_by_code
-  swagger_api :get_by_code do
-    summary "Find user by code"
-    param :query, :code, :string, :required, "Verification code"
+  # POST /users/verify_code
+  swagger_api :verify_code do
+    summary "Verify user code"
+    param :form, :code, :string, :required, "Verification code"
+    param :form, :email, :string, :required, "Email"
     response :ok
     response :not_found
   end
-  def get_by_code
-    user = User.find_by(confirmation_token: params[:code], password: ["", nil])
+  def verify_code
+    user = User.find_by(confirmation_token: params[:code], email: params[:email])
 
     if user
+      token = TokenHelper.process_token(request, user)
+      user = user.as_json
+      user[:token] = token
+
       render json: user, status: :ok
     else
       render status: :not_found
@@ -62,10 +67,9 @@ class UsersController < ApplicationController
   swagger_api :update do
     summary "Set user password"
     param :path, :id, :integer, :required, "User id"
-    param :form, :email, :string, :required, "User email"
-    param :form, :code, :integer, :required, "Verification code"
     param :form, :password, :string, :required, "User password"
     param :form, :password_confirmation, :string, :required, "User password confirm"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
     response :forbidden
@@ -75,15 +79,17 @@ class UsersController < ApplicationController
     user = User.find(params[:id])
 
     ActiveRecord::Base.transaction do
-      if user.email == params[:email] and user.confirmation_token == params[:code]
+      if user
         user.confirmed_at = DateTime.now
         user.password = params[:password]
         user.password_confirmation = params[:password_confirmation]
 
         if user.save
           token = TokenHelper.process_token(request, user)
+          user = user.as_json
+          user[:token] = token
 
-          render json: {token: token.token}, status: :ok
+          render json: user, status: :ok
         else
           render json: user.errors, status: :unprocessable_entity
         end
@@ -99,7 +105,23 @@ class UsersController < ApplicationController
   # end
 
   protected
+  def set_user
+    begin
+      @user = User.find(params[:id])
+    rescue
+        render status: :not_found and return
+    end
+  end
+
   def create_params
     params.permit(:email)
+  end
+
+  def authorize_user
+    @user = AuthorizationHelper.auth_user(request, params[:id])
+
+    unless @user
+      render status: :forbidden and return
+    end
   end
 end

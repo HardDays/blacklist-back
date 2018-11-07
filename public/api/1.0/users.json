@@ -5,16 +5,23 @@
   "resourcePath": "users",
   "apis": [
     {
-      "path": "/users/get_by_code.json",
+      "path": "/users/verify_code.json",
       "operations": [
         {
-          "summary": "Find user by code",
+          "summary": "Verify user code",
           "parameters": [
             {
-              "paramType": "query",
+              "paramType": "form",
               "name": "code",
               "type": "string",
               "description": "Verification code",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "email",
+              "type": "string",
+              "description": "Email",
               "required": true
             }
           ],
@@ -30,8 +37,8 @@
               "message": "Not Found"
             }
           ],
-          "nickname": "Users#get_by_code",
-          "method": "get"
+          "nickname": "Users#verify_code",
+          "method": "post"
         }
       ]
     },
@@ -107,20 +114,6 @@
             },
             {
               "paramType": "form",
-              "name": "email",
-              "type": "string",
-              "description": "User email",
-              "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "code",
-              "type": "integer",
-              "description": "Verification code",
-              "required": true
-            },
-            {
-              "paramType": "form",
               "name": "password",
               "type": "string",
               "description": "User password",
@@ -131,6 +124,13 @@
               "name": "password_confirmation",
               "type": "string",
               "description": "User password confirm",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
               "required": true
             }
           ],

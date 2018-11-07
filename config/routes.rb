@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :users, only: [:show, :create, :update] do
     collection do
-      get :get_by_code
+      post :verify_code
     end
   end
 

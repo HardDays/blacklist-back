@@ -6,22 +6,6 @@ RSpec.describe 'Users API', type: :request do
   let(:user_id) { users.first.id }
   let(:user) { users.first }
 
-  # Test suite for GET /users
-  # describe 'GET /users' do
-  #   # make HTTP get request before each example
-  #   before { get '/users' }
-  #
-  #   it 'returns users' do
-  #     # Note `json` is a custom helper to parse JSON responses
-  #     expect(json).not_to be_empty
-  #     expect(json.size).to eq(10)
-  #   end
-  #
-  #   it 'returns status code 200' do
-  #     expect(response).to have_http_status(200)
-  #   end
-  # end
-
   # Test suite for GET /users/:id
   describe 'GET /users/:id' do
     before { get "/users/#{user_id}" }
@@ -50,16 +34,17 @@ RSpec.describe 'Users API', type: :request do
     end
   end
 
-  # Test suite for GET /users/get_by_code
-  describe 'GET /users/get_by_code' do
+  # Test suite for POST /users/verify_code
+  describe 'POST /users/verify_code' do
     # valid payload
-    let(:valid_attributes) { { code: user.confirmation_token } }
+    let(:valid_attributes) { { code: user.confirmation_token, email: user.email } }
 
     context 'when the request is valid' do
-      before { get '/users/get_by_code', params: valid_attributes }
+      before { post '/users/verify_code', params: valid_attributes }
 
       it 'returns a user' do
         expect(json['email']).to eq(user.email)
+        expect(json['id']).to eq(user.id)
       end
 
       it 'returns status code 200' do
@@ -67,8 +52,21 @@ RSpec.describe 'Users API', type: :request do
       end
     end
 
-    context 'when the request is invalid' do
-      before { get '/users/get_by_code', params: { code: 0 } }
+    context 'when the code is invalid' do
+      before { post '/users/verify_code', params: { code: 0, email: user.email } }
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body)
+          .to match("")
+      end
+    end
+
+    context 'when the email is invalid' do
+      before { get '/users/verify_code', params: { code: user.confirmation_token, email: "aaa.aaa" } }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
@@ -117,16 +115,18 @@ RSpec.describe 'Users API', type: :request do
   # Test suite for PATCH /users/
   describe 'PATCH /users' do
     # valid payload
-    let(:valid_attributes) { { email: user.email, code: user.confirmation_token,
-                               password: "123123", password_confirmation: "123123" } }
+    let(:valid_attributes) { { password: "123123", password_confirmation: "123123" } }
 
     context 'when the request is valid' do
-      before { patch "/users/#{user_id}", params: valid_attributes }
+      before do
+        post "/users/verify_code", params: { code: user.confirmation_token, email: user.email }
+        token = json['token']
+
+        patch "/users/#{user_id}", params: valid_attributes, headers: { 'Authorization': token }
+      end
 
       it 'sets user password' do
-        expect(json['token']).to be_kind_of(String)
-        expect(user.password).to be_kind_of(String)
-        expect(user.confirmed_at).not_to be_nil
+        expect(json['id']).to eq(user.id)
       end
 
       it 'returns status code 200' do
@@ -134,22 +134,13 @@ RSpec.describe 'Users API', type: :request do
       end
     end
 
-    context 'when the code is invalid' do
-      before { patch "/users/#{user_id}", params: { email: user.email, code: '0000',
-                                        password: "123123", password_confirmation: "123123" } }
-
-      it 'returns status code 403' do
-        expect(response).to have_http_status(403)
-      end
-
-      it 'returns a validation failure message' do
-        expect(response.body)
-          .to match("{\"errors\":[\"INVALID_CODE\"]}")
-      end
-    end
-
     context 'when the request without password' do
-      before { patch "/users/#{user_id}", params: { email: user.email, code: user.confirmation_token} }
+      before do
+        post "/users/verify_code", params: { code: user.confirmation_token, email: user.email }
+        token = json['token']
+
+        patch "/users/#{user_id}", params: {}, headers: { 'Authorization': token }
+      end
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -162,8 +153,12 @@ RSpec.describe 'Users API', type: :request do
     end
 
     context 'when the request password mistmatch' do
-      before { patch "/users/#{user_id}", params: { email: user.email, code: user.confirmation_token,
-                                        password: "123123", password_confirmation: "1231234"} }
+      before do
+        post "/users/verify_code", params: { code: user.confirmation_token, email: user.email }
+        token = json['token']
+
+        patch "/users/#{user_id}", params: { password: "123123", password_confirmation: "1231234"}, headers: { 'Authorization': token }
+      end
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -172,6 +167,14 @@ RSpec.describe 'Users API', type: :request do
       it 'returns a validation failure message' do
         expect(response.body)
           .to match("{\"password_confirmation\":[\"NOT_MATCHED\"]}")
+      end
+    end
+
+    context 'when the request without authorization' do
+      before { patch "/users/#{user_id}", params: { password: "123123", password_confirmation: "123123"} }
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
       end
     end
   end

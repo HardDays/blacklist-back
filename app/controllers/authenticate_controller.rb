@@ -21,7 +21,7 @@ class AuthenticateController < ApplicationController
     end
 
     token = TokenHelper.process_token(request, user)
-    render json: {token: token.token} , status: :ok
+    render json: {token: token} , status: :ok
 
   end
 

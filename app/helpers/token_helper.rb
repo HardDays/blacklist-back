@@ -13,7 +13,7 @@ module TokenHelper
     token = Token.new(user_id: user.id, info: info)
     token.save
 
-    return token
+    return token.token
   end
 
   def self.generate_register_token

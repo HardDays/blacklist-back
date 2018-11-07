@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2018_11_06_201608) do
   create_table "tokens", force: :cascade do |t|
     t.integer "user_id"
     t.string "info"
+    t.string "token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
