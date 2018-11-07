@@ -74,7 +74,7 @@ class VacanciesController < ApplicationController
 
   protected
   def set_company
-    @company = user.company
+    @company = @user.company
 
     unless @company
       render status: :not_found

@@ -51,7 +51,7 @@ class JobsController < ApplicationController
 
   protected
   def set_employee
-    @employee = user.employee
+    @employee = @user.employee
 
     unless @employee
       render status: :not_found
