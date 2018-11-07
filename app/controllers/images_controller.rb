@@ -48,11 +48,16 @@ class ImagesController < ApplicationController
     response :unprocessable_entity
   end
   def create
-    image = Image.new(base64: params[:base64], user_id: params[:user_id])
-    if image.save
-      render json: image, status: :ok
-    else
-      render json: image.errors, status: :unprocessable_entity
+    ActiveRecord::Base.transaction do
+      image = Image.new(base64: params[:base64])
+      if image.save
+        @user.image = image
+        @user.save!
+
+        render json: image, status: :ok
+      else
+        render json: image.errors, status: :unprocessable_entity
+      end
     end
   end
 
