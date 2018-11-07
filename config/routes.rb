@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   resources :companies, only: [:show, :create, :update] do
     resources :vacancies, only: [:create, :update]
   end
-  resources :employees, only: [:show, :create, :update] do
+  resources :employees, only: [:index, :show, :create, :update] do
     resources :jobs, only: [:create, :update]
   end
 

@@ -8,6 +8,39 @@
       "path": "/employees.json",
       "operations": [
         {
+          "summary": "Retrieve employees list",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Employees#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/employees.json",
+      "operations": [
+        {
           "summary": "Create employee profile",
           "parameters": [
             {

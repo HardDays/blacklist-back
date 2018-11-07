@@ -3,6 +3,19 @@ class EmployeesController < ApplicationController
   before_action :set_employee, only: [:show, :update]
   swagger_controller :employee, "Employees"
 
+  # GET /employees
+  swagger_api :index do
+    summary "Retrieve employees list"
+    param :query, :limit, :integer, :optional, "Limit"
+    param :query, :offset, :integer, :optional, "Offset"
+    response :ok
+  end
+  def index
+    employees = Employee.all
+
+    render json: employees.limit(params[:limit]).offset(params[:offset]), status: :ok
+  end
+
   # GET /employees/1
   swagger_api :show do
     summary "Get employee profile"
