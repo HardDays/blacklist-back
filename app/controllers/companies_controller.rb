@@ -1,7 +1,6 @@
 class CompaniesController < ApplicationController
   before_action :authorize_user, only: [:show, :create, :update]
   before_action :set_company, only: [:show, :update]
-  before_action :check_user, only: [:show, :update]
   swagger_controller :company, "Companies"
 
   # GET /companies/1
@@ -45,8 +44,7 @@ class CompaniesController < ApplicationController
   # PATCH /companies/1
   swagger_api :update do
     summary "Update company profile"
-    param :path, :id, :integer, :required, "Company id"
-    param :form, :user_id, :integer, :required, "User id"
+    param :path, :id, :integer, :required, "User id"
     param :form, :name, :string, :required, "Company name"
     param :form, :description, :string, :optional, "Company description"
     param :form, :contacts, :string, :optional, "Company contacts"
@@ -65,10 +63,10 @@ class CompaniesController < ApplicationController
 
   protected
   def set_company
-    begin
-      @company = Company.find(params[:id])
-    rescue
-      render status: :not_found
+    @company = user.company
+
+    unless @company
+      render status: :not_found and return
     end
   end
 
@@ -76,12 +74,6 @@ class CompaniesController < ApplicationController
     @user = AuthorizationHelper.auth_user(request, params[:id])
 
     unless @user
-      render status: :forbidden and return
-    end
-  end
-
-  def check_user
-    unless @user.id == @company.user_id
       render status: :forbidden and return
     end
   end

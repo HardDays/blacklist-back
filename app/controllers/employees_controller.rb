@@ -1,10 +1,9 @@
 class EmployeesController < ApplicationController
   before_action :authorize_user, only: [:show, :create, :update]
   before_action :set_employee, only: [:show, :update]
-  before_action :check_user, only: [:show, :update]
   swagger_controller :employee, "Employees"
 
-  # GET /companies/1
+  # GET /employees/1
   swagger_api :show do
     summary "Get employee profile"
     param :path, :id, :integer, :required, "Employee id"
@@ -18,7 +17,7 @@ class EmployeesController < ApplicationController
     render json: @employee, status: :ok
   end
 
-  # POST /companies
+  # POST /employees
   swagger_api :create do
     summary "Create employee profile"
     param :form, :user_id, :integer, :required, "User id"
@@ -50,11 +49,10 @@ class EmployeesController < ApplicationController
     end
   end
 
-  # PATCH /companies/1
+  # PATCH /employees/1
   swagger_api :update do
     summary "Update employee profile"
-    param :path, :id, :integer, :required, "employee id"
-    param :form, :user_id, :integer, :required, "User id"
+    param :path, :id, :integer, :required, "User id"
     param :form, :first_name, :string, :required, "First name"
     param :form, :last_name, :string, :required, "Last name"
     param :form, :second_name, :string, :required, "Second name"
@@ -81,9 +79,9 @@ class EmployeesController < ApplicationController
 
   protected
   def set_employee
-    begin
-      @employee = Employee.find(params[:id])
-    rescue
+    @employee = user.employee
+
+    unless @employee
       render status: :not_found
     end
   end
@@ -92,12 +90,6 @@ class EmployeesController < ApplicationController
     @user = AuthorizationHelper.auth_user(request, params[:id])
 
     unless @user
-      render status: :forbidden and return
-    end
-  end
-
-  def check_user
-    unless @user.id == @employee.user_id
       render status: :forbidden and return
     end
   end

@@ -135,13 +135,6 @@
               "paramType": "path",
               "name": "id",
               "type": "integer",
-              "description": "Company id",
-              "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "user_id",
-              "type": "integer",
               "description": "User id",
               "required": true
             },

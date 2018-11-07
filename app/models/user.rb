@@ -6,8 +6,8 @@ class User < ApplicationRecord
   validates_confirmation_of :password, message: 'NOT_MATCHED', if: :password_changed?
   attr_accessor :password_confirmation
 
-  has_one :company, dependent: :destroy
-  has_one :employee, dependent: :destroy
+  has_one :company, dependent: :destroy, optional: true
+  has_one :employee, dependent: :destroy, optional: true
   belongs_to :image, dependent: :destroy, optional: true
   has_many :tokens
 
