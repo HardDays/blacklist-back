@@ -56,10 +56,10 @@ class CompaniesController < ApplicationController
     response :not_found
   end
   def update
-    if company.update(company_params)
-      render json: company, status: :ok
+    if @company.update(company_params)
+      render json: @company, status: :ok
     else
-      render json: company.errors, status: :unprocessable_entity
+      render json: @company.errors, status: :unprocessable_entity
     end
   end
 
@@ -81,7 +81,7 @@ class CompaniesController < ApplicationController
   end
 
   def check_user
-    unless @user.id == @company.id
+    unless @user.id == @company.user_id
       render status: :forbidden and return
     end
   end

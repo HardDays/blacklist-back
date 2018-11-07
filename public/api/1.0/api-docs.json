@@ -18,6 +18,10 @@
     {
       "path": "/api/1.0/companies.{format}",
       "description": "Companies"
+    },
+    {
+      "path": "/api/1.0/employees.{format}",
+      "description": "Employees"
     }
   ],
   "authorizations": null,
