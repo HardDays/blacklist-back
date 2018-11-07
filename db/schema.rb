@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_07_135931) do
+ActiveRecord::Schema.define(version: 2018_11_07_191324) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,7 +47,6 @@ ActiveRecord::Schema.define(version: 2018_11_07_135931) do
     t.string "base64"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id"
   end
 
   create_table "tokens", force: :cascade do |t|
@@ -68,6 +67,7 @@ ActiveRecord::Schema.define(version: 2018_11_07_135931) do
     t.datetime "confirmation_sent_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "image_id"
   end
 
 end

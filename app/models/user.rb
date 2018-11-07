@@ -8,7 +8,7 @@ class User < ApplicationRecord
 
   has_one :company, dependent: :destroy
   has_one :employee, dependent: :destroy
-  has_one :image, dependent: :destroy
+  belongs_to :image, dependent: :destroy, optional: true
   has_many :tokens
 
   SALT = 'elite_salt'

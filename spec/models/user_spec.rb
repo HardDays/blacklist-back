@@ -9,10 +9,10 @@ RSpec.describe User, type: :model do
   end
 
   it { should have_many(:tokens) }
-  it { should have_one(:image) }
+  it { should belong_to(:image) }
   it "should not be deleted when image destroyed" do
     user = create(:user)
-    image = create(:image, user_id: user.id)
+    image = create(:image)
 
     user.image = image
     user.save!
