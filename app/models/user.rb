@@ -6,6 +6,9 @@ class User < ApplicationRecord
   validates_confirmation_of :password, message: 'NOT_MATCHED', if: :password_changed?
   attr_accessor :password_confirmation
 
+  has_one :company, dependent: :destroy
+  has_one :employee, dependent: :destroy
+  has_one :image, dependent: :destroy
   has_many :tokens
 
   SALT = 'elite_salt'
