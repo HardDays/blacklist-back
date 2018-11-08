@@ -24,7 +24,7 @@ class VacancyResponsesController < ApplicationController
   end
 
   # POST /vacancy_responses
-  swagger_api :index do
+  swagger_api :create do
     summary "Create vacancy response"
     param :path, :vacancy_id, :integer, :required, "Vacancy_id"
     param :form, :employee_id, :integer, :required, "Employee id"

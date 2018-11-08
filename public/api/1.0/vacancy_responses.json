@@ -8,10 +8,7 @@
       "path": "/vacancies/{vacancy_id}/vacancy_responses.json",
       "operations": [
         {
-          "summary": [
-            "Retrieve list of responses",
-            "Create vacancy response"
-          ],
+          "summary": "Retrieve list of responses",
           "parameters": [
             {
               "paramType": "path",
@@ -40,7 +37,36 @@
               "type": "string",
               "description": "Authentication token",
               "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
             },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "VacancyResponses#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/vacancies/{vacancy_id}/vacancy_responses.json",
+      "operations": [
+        {
+          "summary": "Create vacancy response",
+          "parameters": [
             {
               "paramType": "path",
               "name": "vacancy_id",
@@ -78,25 +104,10 @@
               "code": 404,
               "responseModel": null,
               "message": "Not Found"
-            },
-            {
-              "code": 200,
-              "responseModel": null,
-              "message": "Ok"
-            },
-            {
-              "code": 403,
-              "responseModel": null,
-              "message": "Forbidden"
-            },
-            {
-              "code": 404,
-              "responseModel": null,
-              "message": "Not Found"
             }
           ],
-          "nickname": "VacancyResponses#index",
-          "method": "get"
+          "nickname": "VacancyResponses#create",
+          "method": "post"
         }
       ]
     }
