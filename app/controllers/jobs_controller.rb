@@ -33,8 +33,8 @@ class JobsController < ApplicationController
     summary "Update employee profile"
     param :path, :employee_id, :integer, :required, "User id"
     param :path, :id, :integer, :required, "Job id"
-    param :form, :name, :string, :required, "Name"
-    param :form, :period, :string, :required, "Period"
+    param :form, :name, :string, :optional, "Name"
+    param :form, :period, :string, :optional, "Period"
     param :form, :position, :string, :optional, "position"
     param :form, :description, :string, :optional, "Description"
     param :header, 'Authorization', :string, :required, 'Authentication token'

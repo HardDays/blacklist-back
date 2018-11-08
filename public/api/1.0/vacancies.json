@@ -100,7 +100,7 @@
               "name": "position",
               "type": "string",
               "description": "Position",
-              "required": true
+              "required": false
             },
             {
               "paramType": "form",
@@ -121,7 +121,7 @@
               "name": "description",
               "type": "string",
               "description": "Description",
-              "required": true
+              "required": false
             },
             {
               "paramType": "header",

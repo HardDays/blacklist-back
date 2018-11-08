@@ -100,14 +100,14 @@
               "name": "name",
               "type": "string",
               "description": "Name",
-              "required": true
+              "required": false
             },
             {
               "paramType": "form",
               "name": "period",
               "type": "string",
               "description": "Period",
-              "required": true
+              "required": false
             },
             {
               "paramType": "form",

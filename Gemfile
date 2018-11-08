@@ -41,4 +41,3 @@ end
 
 gem 'devise'
 gem 'swagger-docs'
-gem 'active_model_serializers'

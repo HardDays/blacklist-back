@@ -1,10 +1,9 @@
 class VacancyResponsesController < ApplicationController
   before_action :auth_and_set_user, only: [:index, :create]
-  before_action :check_company, only: [:index]
   before_action :set_vacancy, only: [:index, :create]
-  before_action :set_employee, only: [:create]
+  before_action :check_company, only: [:index]
   before_action :check_employee, only: [:create]
-  swagger_controller :vacancy_response, "Vacancy responces"
+  swagger_controller :vacancy_response, "Vacancy responses"
 
   # GET /vacancy_responses
   swagger_api :index do
@@ -27,14 +26,13 @@ class VacancyResponsesController < ApplicationController
   swagger_api :create do
     summary "Create vacancy response"
     param :path, :vacancy_id, :integer, :required, "Vacancy_id"
-    param :form, :employee_id, :integer, :required, "Employee id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :forbidden
     response :not_found
   end
   def create
-    @vacancy_response = VacancyResponse.new(vacancy_response_params)
+    @vacancy_response = VacancyResponse.new(vacancy_id: params[:vacancy_id], employee_id: @user.employee.id)
 
     if @vacancy_response.save
       render json: @vacancy_response, status: :ok
@@ -66,21 +64,9 @@ class VacancyResponsesController < ApplicationController
     end
   end
 
-  def set_employee
-    begin
-      @employee = Employee.find(params[:employee_id])
-    rescue
-      render status: :not_found and return
-    end
-  end
-
   def check_employee
-    unless @employee.user_id == @user.id
+    unless @user.employee
       render status: :forbidden and return
     end
-  end
-
-  def vacancy_response_params
-    params.permit(:vacancy_id, :employee_id)
   end
 end

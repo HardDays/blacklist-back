@@ -22,4 +22,26 @@ class User < ApplicationRecord
       self.password = User.encrypt_password(self.password) if self.password
     end
   end
+
+  def as_json(options={})
+    if options[:only]
+      return res
+    end
+
+    res = super
+    res.delete('password')
+    res.delete('reset_password_token')
+    res.delete('reset_password_sent_at')
+    res.delete('confirmation_token')
+    res.delete('confirmed_at')
+    res.delete('confirmation_sent_at')
+
+    if employee
+      res[:user_type] = 'employee'
+    elsif company
+      res[:user_type] = 'company'
+    end
+
+    res
+  end
 end

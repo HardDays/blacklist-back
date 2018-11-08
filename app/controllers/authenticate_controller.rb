@@ -4,7 +4,7 @@ class AuthenticateController < ApplicationController
   # POST /auth/login
   swagger_api :login do
     summary "Authorize by email and password"
-    param :form, :email, :string, :optional, "Email"
+    param :form, :email, :string, :required, "Email"
     param :form, :password, :password, :required, "Password"
     response :unauthorized
   end

@@ -14,7 +14,7 @@ class VacanciesController < ApplicationController
   def index
     vacancies = Vacancy.all
 
-    render json: vacancies.limit(params[:limit]).offset(params[:offset]), status: :ok
+    render json: vacancies.limit(params[:limit]).offset(params[:offset]), short: true, status: :ok
   end
 
   # GET /vacancies/1
@@ -62,10 +62,10 @@ class VacanciesController < ApplicationController
     summary "Update company vacancy"
     param :path, :company_id, :integer, :required, "User id"
     param :path, :id, :integer, :required, "Vacancy id"
-    param :form, :position, :string, :required, "Position"
+    param :form, :position, :string, :optional, "Position"
     param :form, :min_experience, :integer, :optional, "Minimal experience needed"
     param :form, :salary, :string, :optional, "Salary"
-    param :form, :description, :string, :required, "Description"
+    param :form, :description, :string, :optional, "Description"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found

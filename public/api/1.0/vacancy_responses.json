@@ -75,13 +75,6 @@
               "required": true
             },
             {
-              "paramType": "form",
-              "name": "employee_id",
-              "type": "integer",
-              "description": "Employee id",
-              "required": true
-            },
-            {
               "paramType": "header",
               "name": "Authorization",
               "type": "string",

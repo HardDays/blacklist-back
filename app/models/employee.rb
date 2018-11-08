@@ -9,4 +9,30 @@ class Employee < ApplicationRecord
 
   enum status: [:draft, :posted]
   enum gender: [:m, :f]
+
+  def as_json(options={})
+    res = super
+    res.delete('user_id')
+    res[:id] = user_id
+
+    if options[:only]
+      return res
+    end
+
+    if options[:short]
+      attrs = {}
+      attrs[:id] = user_id
+      attrs[:first_name] = first_name
+      attrs[:second_name] = second_name
+      attrs[:last_name] = last_name
+      attrs[:position] = position
+      attrs[:experience] = experience
+
+      return attrs
+    end
+
+    res[:jobs] = jobs
+
+    res
+  end
 end

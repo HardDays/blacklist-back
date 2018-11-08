@@ -28,7 +28,7 @@ class UsersController < ApplicationController
   end
   def my
     if @user
-      render json: @user, status: :ok
+      render json: @user, extended: true, status: :ok
     else
       render status: :not_found
     end
@@ -105,7 +105,7 @@ class UsersController < ApplicationController
           user = user.as_json
           user[:token] = token
 
-          render json: user, status: :ok
+          render json: user, extended: true, status: :ok
         else
           render json: user.errors, status: :unprocessable_entity
         end

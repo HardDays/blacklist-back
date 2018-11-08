@@ -13,7 +13,7 @@ class EmployeesController < ApplicationController
   def index
     employees = Employee.all
 
-    render json: employees.limit(params[:limit]).offset(params[:offset]), status: :ok
+    render json: employees.limit(params[:limit]).offset(params[:offset]), short: true, status: :ok
   end
 
   # GET /employees/1

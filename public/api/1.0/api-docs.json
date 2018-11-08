@@ -33,7 +33,7 @@
     },
     {
       "path": "/api/1.0/vacancy_responses.{format}",
-      "description": "Vacancy responces"
+      "description": "Vacancy responses"
     }
   ],
   "authorizations": null,
