@@ -41,3 +41,4 @@ end
 
 gem 'devise'
 gem 'swagger-docs'
+gem 'mini_magick'
