@@ -18,8 +18,10 @@ class User < ApplicationRecord
   end
 
   def encrypt
-    if self.password and self.password != ""
-      self.password = User.encrypt_password(self.password) if self.password
+    if password_changed?
+      if self.password and self.password != ""
+        self.password = User.encrypt_password(self.password) if self.password
+      end
     end
   end
 
