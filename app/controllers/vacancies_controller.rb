@@ -37,6 +37,9 @@ class VacanciesController < ApplicationController
   swagger_api :create do
     summary "Create company vacancy"
     param :path, :company_id, :integer, :required, "User id"
+    param :form, :position, :string, :required, "Position"
+    param :form, :min_experience, :integer, :optional, "Minimal experience needed"
+    param :form, :salary, :string, :optional, "Salary"
     param :form, :description, :string, :required, "Description"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
@@ -59,6 +62,9 @@ class VacanciesController < ApplicationController
     summary "Update company vacancy"
     param :path, :company_id, :integer, :required, "User id"
     param :path, :id, :integer, :required, "Vacancy id"
+    param :form, :position, :string, :required, "Position"
+    param :form, :min_experience, :integer, :optional, "Minimal experience needed"
+    param :form, :salary, :string, :optional, "Salary"
     param :form, :description, :string, :required, "Description"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
@@ -98,6 +104,6 @@ class VacanciesController < ApplicationController
   end
 
   def vacancy_params
-    params.permit(:description)
+    params.permit(:position, :min_experience, :salary, :description)
   end
 end
