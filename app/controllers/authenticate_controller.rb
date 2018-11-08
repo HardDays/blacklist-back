@@ -6,7 +6,7 @@ class AuthenticateController < ApplicationController
     summary "Authorize by email and password"
     param :form, :email, :string, :required, "Email"
     param :form, :password, :password, :required, "Password"
-    response :unauthorized
+    response :forbidden
   end
   def login
     password = User.encrypt_password(params[:password])
