@@ -5,6 +5,7 @@ class Employee < ApplicationRecord
 
   belongs_to :user
   has_many :jobs, dependent: :destroy
+  has_many :vacancy_responses, dependent: :destroy
 
   enum status: [:draft, :posted]
   enum gender: [:m, :f]

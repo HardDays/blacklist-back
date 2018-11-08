@@ -19,6 +19,27 @@
             },
             {
               "paramType": "form",
+              "name": "position",
+              "type": "string",
+              "description": "Position",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "min_experience",
+              "type": "integer",
+              "description": "Minimal experience needed",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "salary",
+              "type": "string",
+              "description": "Salary",
+              "required": false
+            },
+            {
+              "paramType": "form",
               "name": "description",
               "type": "string",
               "description": "Description",
@@ -73,6 +94,27 @@
               "type": "integer",
               "description": "Vacancy id",
               "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "position",
+              "type": "string",
+              "description": "Position",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "min_experience",
+              "type": "integer",
+              "description": "Minimal experience needed",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "salary",
+              "type": "string",
+              "description": "Salary",
+              "required": false
             },
             {
               "paramType": "form",

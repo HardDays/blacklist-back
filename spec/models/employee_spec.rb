@@ -11,8 +11,6 @@ RSpec.describe Employee, type: :model do
     user = create(:user)
     employee = create(:employee, user_id: user.id)
 
-    user.employee = employee
-    user.save!
     expect { user.destroy }.to change { Employee.count }.by(-1)
   end
 end

@@ -9,8 +9,6 @@ RSpec.describe Company, type: :model do
     user = create(:user)
     company = create(:company, user_id: user.id)
 
-    user.company = company
-    user.save!
     expect { user.destroy }.to change { Company.count }.by(-1)
   end
 end

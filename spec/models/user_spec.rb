@@ -14,8 +14,6 @@ RSpec.describe User, type: :model do
     user = create(:user)
     image = create(:image)
 
-    user.image = image
-    user.save!
     expect { image.destroy }.to change { User.count }.by(0)
   end
 end

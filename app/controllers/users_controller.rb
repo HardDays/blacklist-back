@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action :authorize_user, only: [:update, :my]
+  before_action :authorize_user, only: [:update]
+  before_action :auth_and_set_user, only: [:my]
   before_action :set_user, only: [:show]
   swagger_controller :users, "Users"
 
@@ -134,6 +135,14 @@ class UsersController < ApplicationController
 
   def authorize_user
     @user = AuthorizationHelper.auth_user(request, params[:id])
+
+    unless @user
+      render status: :forbidden and return
+    end
+  end
+
+  def auth_and_set_user
+    @user = AuthorizationHelper.auth_and_set_user(request)
 
     unless @user
       render status: :forbidden and return

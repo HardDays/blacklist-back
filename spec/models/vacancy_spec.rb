@@ -10,8 +10,6 @@ RSpec.describe Vacancy, type: :model do
     company = create(:company, user_id: user.id)
     vacancy = create(:vacancy, company_id: company.id)
 
-    company.vacancies << vacancy
-    company.save!
     expect { company.destroy }.to change { Vacancy.count }.by(-1)
   end
 end

@@ -9,4 +9,13 @@ module AuthorizationHelper
     end
   end
 
+  def self.auth_and_set_user(request)
+    tokenstr = request.headers['Authorization']
+
+    token = Token.find_by(token: tokenstr)
+    if token
+      return token.user
+    end
+  end
+
 end
