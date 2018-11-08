@@ -1,5 +1,5 @@
 class EmployeesController < ApplicationController
-  before_action :authorize_user, only: [:show, :create, :update]
+  before_action :authorize_user, only: [:create, :update]
   before_action :set_employee, only: [:show, :update]
   swagger_controller :employee, "Employees"
 
@@ -20,10 +20,8 @@ class EmployeesController < ApplicationController
   swagger_api :show do
     summary "Get employee profile"
     param :path, :id, :integer, :required, "User id"
-    param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
-    response :forbidden
   end
   def show
     render json: @employee, status: :ok
