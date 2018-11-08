@@ -34,6 +34,34 @@ RSpec.describe 'Users API', type: :request do
     end
   end
 
+  # Test suite for GET /users/my
+  # describe 'GET /users/my' do
+  #   before { get "/users/#{user_id}" }
+  #
+  #   context 'when the record exists' do
+  #     it 'returns the user' do
+  #       expect(json).not_to be_empty
+  #       expect(json['id']).to eq(user_id)
+  #     end
+  #
+  #     it 'returns status code 200' do
+  #       expect(response).to have_http_status(200)
+  #     end
+  #   end
+  #
+  #   context 'when the record does not exist' do
+  #     let(:user_id) { 100 }
+  #
+  #     it 'returns status code 404' do
+  #       expect(response).to have_http_status(404)
+  #     end
+  #
+  #     it 'returns a not found message' do
+  #       expect(response.body).to match("")
+  #     end
+  #   end
+  # end
+
   # Test suite for POST /users/verify_code
   describe 'POST /users/verify_code' do
     # valid payload

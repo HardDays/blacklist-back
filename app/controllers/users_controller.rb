@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authorize_user, only: [:update]
+  before_action :authorize_user, only: [:update, :my]
   before_action :set_user, only: [:show]
   swagger_controller :users, "Users"
 
@@ -11,6 +11,21 @@ class UsersController < ApplicationController
     response :not_found
   end
   def show
+    if @user
+      render json: @user, status: :ok
+    else
+      render status: :not_found
+    end
+  end
+
+  # GET /users/my
+  swagger_api :my do
+    summary "Get user info"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :ok
+    response :not_found
+  end
+  def my
     if @user
       render json: @user, status: :ok
     else
