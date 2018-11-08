@@ -13,7 +13,7 @@ class ImagesController < ApplicationController
       render status: :not_found and return
     end
 
-    send_data Base64.decode64(image.base64), :type => 'image/png', :disposition => 'inline'
+    send_data Base64.decode64(image.base64.gsub(/^data:image\/[a-z]+;base64,/, '')), :type => 'image/png', :disposition => 'inline'
   end
 
   swagger_api :get_with_size do
