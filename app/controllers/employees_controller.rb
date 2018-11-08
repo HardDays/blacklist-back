@@ -1,6 +1,6 @@
 class EmployeesController < ApplicationController
-  before_action :authorize_user, only: [:create, :update]
-  before_action :set_employee, only: [:show, :update]
+  before_action :auth_and_set_employee, only: [:create, :update]
+  before_action :set_employee, only: [:show]
   swagger_controller :employee, "Employees"
 
   # GET /employees
@@ -92,19 +92,21 @@ class EmployeesController < ApplicationController
 
   protected
   def set_employee
-    @employee = @user.employee
-
-    unless @employee
+    begin
+      @employee = Employee.find(params[:id])
+    rescue
       render status: :not_found
     end
   end
 
-  def authorize_user
+  def auth_and_set_employee
     @user = AuthorizationHelper.auth_user(request, params[:id])
 
     unless @user
       render status: :forbidden and return
     end
+
+    @employee = @user.employee
   end
 
   def employee_params
