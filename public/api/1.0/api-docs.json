@@ -30,6 +30,10 @@
     {
       "path": "/api/1.0/employees.{format}",
       "description": "Employees"
+    },
+    {
+      "path": "/api/1.0/vacancy_responses.{format}",
+      "description": "Vacancy responces"
     }
   ],
   "authorizations": null,

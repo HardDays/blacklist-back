@@ -4,6 +4,7 @@ class VacancyResponsesController < ApplicationController
   before_action :set_vacancy, only: [:index, :create]
   before_action :set_employee, only: [:create]
   before_action :check_employee, only: [:create]
+  swagger_controller :vacancy_response, "Vacancy responces"
 
   # GET /vacancy_responses
   swagger_api :index do
