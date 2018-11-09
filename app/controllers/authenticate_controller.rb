@@ -24,7 +24,6 @@ class AuthenticateController < ApplicationController
     user = user.as_json
     user["token"] = token
     render json: user , status: :ok
-
   end
 
   # POST /auth/logout

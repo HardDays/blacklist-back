@@ -26,7 +26,6 @@ class CompaniesController < ApplicationController
     param :form, :address, :string, :optional, "Company address"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
-    response :not_found
     response :forbidden
     response :unprocessable_entity
   end
