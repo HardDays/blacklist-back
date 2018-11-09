@@ -108,7 +108,7 @@ class VacanciesController < ApplicationController
 
   def search_text
     if params[:text]
-      @vacancies = @vacancies.where("name ILIKE ?", "%#{params[:text]}%")
+      @vacancies = @vacancies.where("position ILIKE ?", "%#{params[:text]}%")
     end
   end
 
