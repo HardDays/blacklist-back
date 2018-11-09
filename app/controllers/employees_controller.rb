@@ -114,7 +114,8 @@ class EmployeesController < ApplicationController
 
   def search_text
     if params[:text]
-      @employees = @employees.where("(first_name ILIKE ? OR second_name ILIKE ? OR last_name ILIKE ?)", "%#{params[:text]}%")
+      @employees = @employees.where("(first_name ILIKE :query OR second_name ILIKE :query OR last_name ILIKE :query)",
+                                    query: "%#{params[:text]}%")
     end
   end
 
