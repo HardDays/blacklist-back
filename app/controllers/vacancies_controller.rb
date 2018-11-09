@@ -7,14 +7,16 @@ class VacanciesController < ApplicationController
   # GET /vacancies
   swagger_api :index do
     summary "Retrieve all vacancies"
+    param :query, :text, :string, :optional, "Text to search"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     response :ok
   end
   def index
-    vacancies = Vacancy.all
+    @vacancies = Vacancy.all
+    search_text
 
-    render json: vacancies.limit(params[:limit]).offset(params[:offset]), short: true, status: :ok
+    render json: @vacancies.limit(params[:limit]).offset(params[:offset]), short: true, status: :ok
   end
 
   # GET /vacancies/1
@@ -100,6 +102,13 @@ class VacanciesController < ApplicationController
 
     unless @user
       render status: :forbidden and return
+    end
+  end
+
+
+  def search_text
+    if params[:text]
+      @vacancies = @vacancies.where("name ILIKE ?", "%#{params[:text]}%")
     end
   end
 

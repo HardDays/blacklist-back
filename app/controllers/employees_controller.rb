@@ -6,14 +6,16 @@ class EmployeesController < ApplicationController
   # GET /employees
   swagger_api :index do
     summary "Retrieve employees list"
+    param :query, :text, :string, :optional, "Text to search"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     response :ok
   end
   def index
-    employees = Employee.all
+    @employees = Employee.all
+    search_text
 
-    render json: employees.limit(params[:limit]).offset(params[:offset]), short: true, status: :ok
+    render json: @employees.limit(params[:limit]).offset(params[:offset]), short: true, status: :ok
   end
 
   # GET /employees/1
@@ -108,6 +110,12 @@ class EmployeesController < ApplicationController
     end
 
     @employee = @user.employee
+  end
+
+  def search_text
+    if params[:text]
+      @employees = @employees.where("(first_name ILIKE ? OR second_name ILIKE ? OR last_name ILIKE ?)", "%#{params[:text]}%")
+    end
   end
 
   def employee_params
