@@ -12,6 +12,7 @@ class VacancyResponse < ApplicationRecord
     res.delete("vacancy_id")
 
     res[:employee] = employee.as_json(short: true)
+    res[:vacancy_name] = vacancy.position
 
     res
   end
