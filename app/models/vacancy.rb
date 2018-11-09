@@ -8,6 +8,7 @@ class Vacancy < ApplicationRecord
   def as_json(options={})
     res = super
     res[:company_id] = company.user_id
+    res[:company_name] = company.name
 
     if options[:only]
       return res
@@ -17,7 +18,6 @@ class Vacancy < ApplicationRecord
       res.delete('company_id')
       res.delete('description')
       res.delete('min_experience')
-      res[:company_name] = company.name
 
       return res
     end
