@@ -27,9 +27,9 @@
           ],
           "responseMessages": [
             {
-              "code": 401,
+              "code": 403,
               "responseModel": null,
-              "message": "Unauthorized"
+              "message": "Forbidden"
             }
           ],
           "nickname": "Authenticate#login",
