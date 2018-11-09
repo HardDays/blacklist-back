@@ -93,7 +93,8 @@ class EmployeesController < ApplicationController
   protected
   def set_employee
     begin
-      @employee = Employee.find(params[:id])
+      user = User.find(params[:id])
+      @employee = user.employee
     rescue
       render status: :not_found
     end
