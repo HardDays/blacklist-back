@@ -17,7 +17,7 @@ class VacancyResponsesController < ApplicationController
     response :not_found
   end
   def index
-    @vacancy_responses = VacancyResponse.all
+    @vacancy_responses = @vacancy.vacancy_responses.all
 
     render json: @vacancy_responses.limit(params[:limit]).offset(params[:offset]), status: :ok
   end
