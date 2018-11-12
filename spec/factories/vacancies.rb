@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :vacancy do
-    position { Faker::String }
-    description { Faker::String }
+    position { Faker::Lorem.word }
+    description { Faker::Lorem.word }
   end
 end

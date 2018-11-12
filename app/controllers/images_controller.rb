@@ -8,8 +8,9 @@ class ImagesController < ApplicationController
     response :not_found
   end
   def show
-    image = Image.find(params[:id])
-    unless image
+    begin
+      image = Image.find(params[:id])
+    rescue
       render status: :not_found and return
     end
 
@@ -22,8 +23,9 @@ class ImagesController < ApplicationController
     response :not_found
   end
   def get_with_size
-    image = Image.find(params[:id])
-    unless image
+    begin
+      image = Image.find(params[:id])
+    rescue
       render status: :not_found and return
     end
 
@@ -72,8 +74,9 @@ class ImagesController < ApplicationController
     response :forbidden
   end
   def destroy
-    image = Image.find(params[:id])
-    unless image
+    begin
+      image = Image.find(params[:id])
+    rescue
       render status: :not_found and return
     end
 

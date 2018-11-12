@@ -1,15 +1,15 @@
 FactoryBot.define do
   factory :employee do
-    first_name { Faker::String }
-    last_name { Faker::String }
-    second_name { Faker::String }
+    first_name { Faker::Lorem.word }
+    last_name { Faker::Lorem.word }
+    second_name { Faker::Lorem.word }
     birthday { DateTime.now }
     gender { Faker::Number.between(0, 1) }
-    education { Faker::String }
+    education { Faker::Lorem.word }
     education_year { Faker::Number.number(4).to_s}
-    contacts { Faker::String }
-    skills { Faker::String }
-    position { Faker::String }
+    contacts { Faker::Lorem.word }
+    skills { Faker::Lorem.word }
+    position { Faker::Lorem.word }
     experience { Faker::Number.number(3) }
     status { Faker::Number.between(0, 1) }
   end

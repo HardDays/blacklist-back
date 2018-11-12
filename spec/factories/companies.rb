@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :company do
-    name { Faker::String }
-    description { Faker:: String }
-    contacts { Faker:: String }
-    address { Faker:: String }
+    name { Faker::Lorem.word }
+    description { Faker:: Lorem.word }
+    contacts { Faker:: Lorem.word }
+    address { Faker:: Lorem.word }
   end
 end

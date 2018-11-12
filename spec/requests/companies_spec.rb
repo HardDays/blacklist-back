@@ -10,6 +10,10 @@ RSpec.describe 'Company API', type: :request do
   let(:company2) { create(:company, user_id: user2.id) }
   let(:company_id2) { company2.user_id }
 
+  # valid payload
+  let(:valid_attributes) { { id: user.id, name: 'name', description: "description", contacts: "contacts", address: "address" } }
+  let(:invalid_attributes) { { id: user.id, description: "description", contacts: "contacts", address: "address" } }
+
   # Test suite for GET /companies/:id
   describe 'GET /companies/:id' do
     context 'when the record exists' do
@@ -81,10 +85,6 @@ RSpec.describe 'Company API', type: :request do
 
   # Test suite for POST /companies/
   describe 'POST /companies' do
-    # valid payload
-    let(:valid_attributes) { { id: user.id, name: 'name', description: "description", contacts: "contacts", address: "address" } }
-    let(:invalid_attributes) { { id: user.id, description: "description", contacts: "contacts", address: "address" } }
-
     context 'when the request is valid' do
       before do
         post "/auth/login", params: { email: user.email, password: password}
@@ -134,7 +134,7 @@ RSpec.describe 'Company API', type: :request do
         expect(response).to have_http_status(403)
       end
 
-      it 'does not change companies count' do
+      it 'response is empty' do
         expect(response.body).to match("")
       end
     end
@@ -142,10 +142,6 @@ RSpec.describe 'Company API', type: :request do
 
   # Test suite for PATCH /companies/
   describe 'PATCH /companies' do
-    # valid payload
-    let(:valid_attributes) { { name: 'name1', description: "description1", contacts: "contacts1", address: "address1" } }
-    let(:invalid_attributes) { { description: "description1", contacts: "contacts1", address: "address1" } }
-
     context 'when the request is valid' do
       before do
         post "/auth/login", params: { email: user.email, password: password}
@@ -156,11 +152,10 @@ RSpec.describe 'Company API', type: :request do
 
       it 'sets fields' do
         expect(json['id']).to eq(user.id)
-        expect(json['name']).to eq('name1')
-        expect(json['description']).to eq('description1')
-        expect(json['contacts']).to eq('contacts1')
-        expect(json['address']).to eq('address1')
-        expect(json['id']).to eq(user.id)
+        expect(json['name']).to eq('name')
+        expect(json['description']).to eq('description')
+        expect(json['contacts']).to eq('contacts')
+        expect(json['address']).to eq('address')
       end
 
       it 'returns status code 200' do
@@ -170,19 +165,19 @@ RSpec.describe 'Company API', type: :request do
 
     context 'when company doesn\'t exists' do
       let(:company_id) { 100 }
-      
+
       before do
         post "/users/verify_code", params: { code: user.confirmation_token, email: user.email }
         token = json['token']
 
-        patch "/companies/#{company_id}", params: invalid_attributes, headers: { 'Authorization': token }
+        patch "/companies/#{company_id}", params: valid_attributes, headers: { 'Authorization': token }
       end
 
       it 'returns status code 403' do
         expect(response).to have_http_status(403)
       end
 
-      it 'returns a validation failure message' do
+      it 'returns empty response' do
         expect(response.body).to match("")
       end
     end

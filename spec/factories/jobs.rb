@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :job do
-    name { Faker::String }
-    period { Faker::String }
+    name { Faker::Lorem.word }
+    period { Faker::Lorem.word }
   end
 end

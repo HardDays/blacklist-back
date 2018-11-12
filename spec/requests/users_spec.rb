@@ -6,6 +6,8 @@ RSpec.describe 'Users API', type: :request do
   let(:user_id) { users.first.id }
   let(:user) { users.first }
 
+  let(:auth_user) { create(:user, password: "123123") }
+
   # Test suite for GET /users/:id
   describe 'GET /users/:id' do
     before { get "/users/#{user_id}" }
@@ -35,32 +37,37 @@ RSpec.describe 'Users API', type: :request do
   end
 
   # Test suite for GET /users/my
-  # describe 'GET /users/my' do
-  #   before { get "/users/#{user_id}" }
-  #
-  #   context 'when the record exists' do
-  #     it 'returns the user' do
-  #       expect(json).not_to be_empty
-  #       expect(json['id']).to eq(user_id)
-  #     end
-  #
-  #     it 'returns status code 200' do
-  #       expect(response).to have_http_status(200)
-  #     end
-  #   end
-  #
-  #   context 'when the record does not exist' do
-  #     let(:user_id) { 100 }
-  #
-  #     it 'returns status code 404' do
-  #       expect(response).to have_http_status(404)
-  #     end
-  #
-  #     it 'returns a not found message' do
-  #       expect(response.body).to match("")
-  #     end
-  #   end
-  # end
+  describe 'GET /users/my' do
+    context 'when the record exists' do
+      before do
+        post "/auth/login", params: { email: auth_user.email, password: "123123"}
+        token = json['token']
+
+        get "/users/my", headers: { 'Authorization': token }
+      end
+
+      it 'returns the user' do
+        expect(json).not_to be_empty
+        expect(json['id']).to eq(auth_user.id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when the user not authorized' do
+      before { get "/users/my" }
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match("")
+      end
+    end
+  end
 
   # Test suite for POST /users/verify_code
   describe 'POST /users/verify_code' do
