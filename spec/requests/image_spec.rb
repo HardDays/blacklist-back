@@ -114,6 +114,24 @@ RSpec.describe 'Image API', type: :request do
         expect(response.body).to match("")
       end
     end
+
+    context 'do not changes user' do
+      before do
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/images", params: valid_attributes, headers: { 'Authorization': token }
+        post "/auth/login", params: { email: user.email, password: password}
+      end
+
+      it 'token not be empty' do
+        expect(json['token']).to be_kind_of(String)
+      end
+
+      it 'status be ok' do
+        expect(response).to have_http_status(200)
+      end
+    end
   end
 
   # Test suite DELETE 'images/:id'
