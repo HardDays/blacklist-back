@@ -65,11 +65,6 @@
               "message": "Forbidden"
             },
             {
-              "code": 404,
-              "responseModel": null,
-              "message": "Not Found"
-            },
-            {
               "code": 422,
               "responseModel": null,
               "message": "Unprocessable Entity"

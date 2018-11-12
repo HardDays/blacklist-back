@@ -142,7 +142,7 @@ class UsersController < ApplicationController
   end
 
   def auth_and_set_user
-    @user = AuthorizationHelper.auth_and_set_user(request)
+    @user = AuthorizationHelper.auth_user_without_id(request)
 
     unless @user
       render status: :forbidden and return

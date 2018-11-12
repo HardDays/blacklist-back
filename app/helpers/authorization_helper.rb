@@ -9,7 +9,7 @@ module AuthorizationHelper
     end
   end
 
-  def self.auth_and_set_user(request)
+  def self.auth_user_without_id(request)
     tokenstr = request.headers['Authorization']
 
     token = Token.find_by(token: tokenstr)
