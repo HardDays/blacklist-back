@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   end
   resources :employees, only: [:index, :show, :create, :update] do
     resources :jobs, only: [:create, :update]
+    resources :employee_offers, only: [:index, :show, :create]
   end
 
   resources :vacancies, only: [:index, :show] do

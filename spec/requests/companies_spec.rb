@@ -35,7 +35,7 @@ RSpec.describe 'Company API', type: :request do
     end
 
     context 'when the record does not exist' do
-      let(:company_id) { 100 }
+      let(:company_id) { 0 }
 
       before do
         post "/auth/login", params: { email: user.email, password: password}
@@ -164,7 +164,7 @@ RSpec.describe 'Company API', type: :request do
     end
 
     context 'when company doesn\'t exists' do
-      let(:company_id) { 100 }
+      let(:company_id) { 0 }
 
       before do
         post "/users/verify_code", params: { code: user.confirmation_token, email: user.email }

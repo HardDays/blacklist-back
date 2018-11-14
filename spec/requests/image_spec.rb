@@ -21,7 +21,7 @@ RSpec.describe 'Image API', type: :request do
     end
 
     context 'when the record does not exist' do
-      let(:image_id) { 100 }
+      let(:image_id) { 0 }
 
       before { get "/images/#{image_id}" }
 
@@ -50,7 +50,7 @@ RSpec.describe 'Image API', type: :request do
     end
 
     context 'when the record does not exist' do
-      let(:image_id) { 100 }
+      let(:image_id) { 0 }
 
       before { get "/images/#{image_id}/get_with_size" }
 

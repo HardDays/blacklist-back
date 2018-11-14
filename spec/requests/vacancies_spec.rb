@@ -92,7 +92,7 @@ RSpec.describe 'Vacancies API', type: :request do
     end
 
     context 'when the record does not exist' do
-      let(:vacancy_id) { 100 }
+      let(:vacancy_id) { 0 }
 
       before { get "/vacancies/#{vacancy_id}" }
 
@@ -205,7 +205,7 @@ RSpec.describe 'Vacancies API', type: :request do
     end
 
     context 'when employee doesn\'t exists' do
-      let(:vacancy_id) { 100 }
+      let(:vacancy_id) { 0 }
 
       before do
         post "/users/verify_code", params: { code: user.confirmation_token, email: user.email }

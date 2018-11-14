@@ -96,7 +96,7 @@ RSpec.describe 'Job API', type: :request do
     end
 
     context 'when job doesn\'t exists' do
-      let(:job_id) { 100 }
+      let(:job_id) { 0 }
 
       before do
         post "/users/verify_code", params: { code: user.confirmation_token, email: user.email }

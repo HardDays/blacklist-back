@@ -84,7 +84,7 @@ RSpec.describe "VacancyResponse APIs", type: :request do
     end
 
     context 'when vacancy does not exists' do
-      let(:vacancy_id) { 100 }
+      let(:vacancy_id) { 0 }
       before do
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']

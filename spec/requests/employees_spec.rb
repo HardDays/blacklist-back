@@ -139,8 +139,6 @@ RSpec.describe 'Employee API', type: :request do
       end
     end
 
-
-
     context 'when user not payed' do
       before do
         post "/auth/login", params: { email: not_payed_user.email, password: password }
@@ -176,7 +174,7 @@ RSpec.describe 'Employee API', type: :request do
     end
 
     context 'when the record does not exist' do
-      let(:employee_id) { 100 }
+      let(:employee_id) { 0 }
 
       before { get "/employees/#{employee_id}" }
 
@@ -323,7 +321,7 @@ RSpec.describe 'Employee API', type: :request do
     end
 
     context 'when employee doesn\'t exists' do
-      let(:employee_id) { 100 }
+      let(:employee_id) { 0 }
 
       before do
         post "/users/verify_code", params: { code: user.confirmation_token, email: user.email }

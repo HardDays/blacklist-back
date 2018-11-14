@@ -3,6 +3,7 @@ class Company < ApplicationRecord
 
   belongs_to :user
   has_many :vacancies, dependent: :destroy
+  has_many :employee_offers, dependent: :destroy
 
   def as_json(options={})
     res = super
