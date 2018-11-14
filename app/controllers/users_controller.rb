@@ -87,10 +87,10 @@ class UsersController < ApplicationController
   def pay
     @user.is_payed = true
 
-    if user.save
+    if @user.save
       render status: :ok
     else
-      render json: user.errors, status: :unprocessable_entity
+      render json: @user.errors, status: :unprocessable_entity
     end
   end
 
