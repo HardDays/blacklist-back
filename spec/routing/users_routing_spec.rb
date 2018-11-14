@@ -21,5 +21,9 @@ RSpec.describe UsersController, type: :routing do
     it "routes to #verify_code" do
       expect(:post => "/users/verify_code").to route_to("users#verify_code")
     end
+
+    it "routes to #invite" do
+      expect(:post => "/users/invite").to route_to("users#invite")
+    end
   end
 end

@@ -9,7 +9,8 @@ class User < ApplicationRecord
   has_one :company, dependent: :destroy
   has_one :employee, dependent: :destroy
   belongs_to :image, dependent: :destroy, optional: true
-  has_many :tokens
+  has_many :tokens, dependent: :destroy
+  has_many :forgot_password_attempts, dependent: :destroy
 
   SALT = 'elite_salt'
 

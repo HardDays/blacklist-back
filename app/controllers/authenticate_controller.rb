@@ -41,4 +41,44 @@ class AuthenticateController < ApplicationController
       render status: :bad_request
     end
   end
+
+  # POST /auth/forgot_password
+  swagger_api :forgot_password do
+    summary "Remind password"
+    param :form, :email, :string, :optional, "Email"
+    response :ok
+    response :bad_request
+    response :unauthorized
+  end
+  def forgot_password
+    user = User.find_by("LOWER(email) = ?", params[:email].downcase)
+    unless user
+      render json: {error: :USER_DOES_NOT_EXIST}, status: :unauthorized and return
+    end
+
+    attempt = ForgotPasswordAttempt.where(
+      user_id: user.id, created_at: (Time.zone.now.beginning_of_day..Time.zone.now.end_of_day)).first
+    if attempt
+      if attempt.attempt_count >=3
+        render json: {error: :TOO_MANY_ATTEMPTS}, status: :bad_request and return
+      end
+
+      attempt.attempt_count += 1
+      attempt.save
+    else
+      attempt = ForgotPasswordAttempt.new(user_id: user.id, attempt_count: 1)
+      attempt.save
+    end
+
+    password = SecureRandom.hex(4)
+    user.password = password
+    begin
+      ForgotPasswordMailer.forgot_password_email(params[:email], password).deliver
+
+      user.save(validate: false)
+      render status: :ok
+    rescue => ex
+      render status: :bad_request
+    end
+  end
 end

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     collection do
       post :login
       post :logout
+      post :forgot_password
     end
   end
 
