@@ -4,7 +4,7 @@ module AuthorizationHelper
     tokenstr = request.headers['Authorization']
 
     token = Token.find_by(token: tokenstr)
-    if token and token.user_id == user_id.to_i
+    if token and token.user_id == user_id.to_i and !token.user.is_blocked
       return token.user
     end
   end
@@ -13,7 +13,7 @@ module AuthorizationHelper
     tokenstr = request.headers['Authorization']
 
     token = Token.find_by(token: tokenstr)
-    if token
+    if token and !token.user.is_blocked
       return token.user
     end
   end
@@ -22,7 +22,7 @@ module AuthorizationHelper
     tokenstr = request.headers['Authorization']
 
     token = Token.find_by(token: tokenstr)
-    if token&.user&.is_payed
+    if (token&.user&.is_payed and !token.user.is_blocked) or token&.user&.is_admin
       return token.user
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_14_180230) do
+ActiveRecord::Schema.define(version: 2018_11_14_180559) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(version: 2018_11_14_180230) do
     t.integer "image_id"
     t.boolean "is_payed", default: false
     t.boolean "is_admin", default: false
+    t.boolean "is_blocked", default: false
   end
 
   create_table "vacancies", force: :cascade do |t|

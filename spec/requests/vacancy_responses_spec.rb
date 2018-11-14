@@ -25,9 +25,8 @@ RSpec.describe "VacancyResponse APIs", type: :request do
   let!(:vacancy2) { create(:vacancy, company_id: company2.id) }
   let(:vacancy_id2) { vacancy2.id }
 
-
   # Test suite for GET /vacancies/:vacancy_id/vacancy_responses
-  describe 'GET /vacancy_responses' do
+  describe 'GET /vacancy_responses/:vacancy_id/vacancy_responses' do
     context 'when simply get' do
       before do
         post "/auth/login", params: { email: user.email, password: password}
@@ -134,7 +133,7 @@ RSpec.describe "VacancyResponse APIs", type: :request do
   end
 
   # Test suite for POST /vacancy/#{vacancy_id}/vacancy_responses/
-  describe 'POST /vacancy_responses' do
+  describe 'POST /vacancy_responses/:vacancy_id/vacancy_responses/' do
     context 'when the request is valid' do
       before do
         post "/auth/login", params: { email: user2.email, password: password}

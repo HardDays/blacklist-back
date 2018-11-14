@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Admin ban list API', type: :request do
+RSpec.describe 'Admin employees API', type: :request do
   let(:password) { "123123" }
   let!(:admin_user)  { create(:user, password: password, is_admin: true) }
   let(:not_admin_user) { create(:user, password: password) }

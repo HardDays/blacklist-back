@@ -161,7 +161,12 @@ RSpec.describe 'Employee API', type: :request do
   # Test suite for GET /employees/:id
   describe 'GET /employees/:id' do
     context 'when the record exists' do
-      before { get "/employees/#{employee_id}" }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees/#{employee_id}", headers: { 'Authorization': token }
+      end
 
       it 'returns the employee' do
         expect(json).not_to be_empty
@@ -176,7 +181,12 @@ RSpec.describe 'Employee API', type: :request do
     context 'when the record does not exist' do
       let(:employee_id) { 0 }
 
-      before { get "/employees/#{employee_id}" }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees/#{employee_id}", headers: { 'Authorization': token }
+      end
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)

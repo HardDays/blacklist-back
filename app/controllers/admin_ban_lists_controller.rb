@@ -72,9 +72,9 @@ class AdminBanListsController < ApplicationController
   end
 
   def auth_admin
-    @user = AuthorizationHelper.auth_admin(request)
+    user = AuthorizationHelper.auth_admin(request)
 
-    unless @user
+    unless user
       render status: :forbidden and return
     end
   end

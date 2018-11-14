@@ -16,6 +16,10 @@ class AuthenticateController < ApplicationController
       render status: :forbidden and return
     end
 
+    if user.is_blocked
+      render status: :forbidden and return
+    end
+
     if user.password != password
       render status: :forbidden and return
     end

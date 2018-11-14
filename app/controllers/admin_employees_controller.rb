@@ -5,7 +5,7 @@ class AdminEmployeesController < ApplicationController
 
   # GET /admin_ban_lists
   swagger_api :index do
-    summary "Retrieve ban list"
+    summary "Retrieve employees"
     param_list :query, :status, :string, :optional, "Status", [:added, :approved, :denied]
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
@@ -25,8 +25,8 @@ class AdminEmployeesController < ApplicationController
 
   # POST /admin_ban_lists/1/approve
   swagger_api :approve do
-    summary "Approve ban list item"
-    param :path, :id, :integer, :required, "Item id"
+    summary "Approve employee"
+    param :path, :id, :integer, :required, "Employee id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :forbidden
@@ -44,8 +44,8 @@ class AdminEmployeesController < ApplicationController
 
   # POST /admin_ban_lists/1/deny
   swagger_api :deny do
-    summary "Deny ban list item"
-    param :form, :id, :integer, :required, "Item id"
+    summary "Deny employees"
+    param :form, :id, :integer, :required, "Employee id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
@@ -77,9 +77,9 @@ class AdminEmployeesController < ApplicationController
   end
 
   def auth_admin
-    @user = AuthorizationHelper.auth_admin(request)
+    user = AuthorizationHelper.auth_admin(request)
 
-    unless @user
+    unless user
       render status: :forbidden and return
     end
   end

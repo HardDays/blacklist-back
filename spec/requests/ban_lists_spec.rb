@@ -67,8 +67,6 @@ RSpec.describe "BanLists API", type: :request do
       end
     end
 
-
-
     context 'when user not payed' do
       before do
         post "/auth/login", params: { email: not_payed_user.email, password: password}

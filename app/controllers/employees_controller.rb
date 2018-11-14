@@ -1,5 +1,5 @@
 class EmployeesController < ApplicationController
-  before_action :auth_payed_user, only: [:index]
+  before_action :auth_payed_user, only: [:index, :show]
   before_action :auth_and_set_employee, only: [:create, :update]
   before_action :set_employee, only: [:show]
   swagger_controller :employee, "Employees"
@@ -23,6 +23,7 @@ class EmployeesController < ApplicationController
   swagger_api :show do
     summary "Get employee profile"
     param :path, :id, :integer, :required, "User id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
   end

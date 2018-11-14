@@ -263,7 +263,6 @@ RSpec.describe "EmployeeOffers", type: :request do
     end
 
     context 'when the request from not a company' do
-      let(:employee_id) { 0 }
       before do
         post "/auth/login", params: { email: employee_user.email, password: password}
         token = json['token']
@@ -281,12 +280,11 @@ RSpec.describe "EmployeeOffers", type: :request do
     end
 
     context 'when the user not payed' do
-      let(:employee_id) { 0 }
       before do
         post "/auth/login", params: { email: not_payed_user.email, password: password}
         token = json['token']
 
-        post "/employees/#{employee_id}/employee_offers", params: without_position, headers: { 'Authorization': token }
+        post "/employees/#{employee_id}/employee_offers", params: valid_attributes, headers: { 'Authorization': token }
       end
 
       it 'returns empty message' do

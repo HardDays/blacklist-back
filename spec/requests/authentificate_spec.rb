@@ -3,11 +3,13 @@ require 'rails_helper'
 RSpec.describe 'Auth API', type: :request do
   # initialize test data
   let(:user) { create(:user, password: "123123") }
+  let(:blocked_user) { create(:user, password: "123123", is_blocked: true) }
   let(:email) { Faker::Internet.email }
 
   let(:valid_attributes) { { email: user.email, password: "123123" } }
   let(:wrong_password) { { email: user.email, password: "123" } }
   let(:wrong_email) { { email: 'aaa.aaa', password: "123123" } }
+  let(:blocked_user_params) { { email: blocked_user.email, password: "123123" } }
 
 
   # Test suite for POST /auth/login
@@ -34,6 +36,14 @@ RSpec.describe 'Auth API', type: :request do
 
     context 'when the email invalid' do
       before { post '/auth/login', params: wrong_email }
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when user blocked' do
+      before { post '/auth/login', params: blocked_user_params }
 
       it 'returns status code 403' do
         expect(response).to have_http_status(403)
