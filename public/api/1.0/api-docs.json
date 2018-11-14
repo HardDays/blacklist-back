@@ -32,6 +32,10 @@
       "description": "Jobs"
     },
     {
+      "path": "/api/1.0/employee_offers.{format}",
+      "description": "Employee offer"
+    },
+    {
       "path": "/api/1.0/employees.{format}",
       "description": "Employees"
     },

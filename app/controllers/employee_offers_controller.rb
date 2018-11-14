@@ -27,7 +27,6 @@ class EmployeeOffersController < ApplicationController
     summary "Retrieve offer info"
     param :path, :employee_id, :integer, :required, "Employee id"
     param :path, :id, :integer, :required, "Offer id"
-    param :path, :employee_id
     param :header, 'Authorization', :string, :required, "Authorization token"
     response :ok
     response :not_found
