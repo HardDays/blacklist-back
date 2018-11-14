@@ -76,7 +76,7 @@ class UsersController < ApplicationController
     end
   end
 
-
+  # TODO: remove
   # POST /users/:id/pay
   swagger_api :pay do
     summary "Pay for user"
@@ -91,6 +91,32 @@ class UsersController < ApplicationController
       render status: :ok
     else
       render json: user.errors, status: :unprocessable_entity
+    end
+  end
+
+  # TODO: remove
+  # POST /users/:id/make_admin
+  swagger_api :make_admin do
+    summary "Make user admin"
+    param :form, :id, :integer, :required, "User id"
+    param :form, :code, :string, :required, "Auth code"
+    response :ok
+    response :forbidden
+    response :not_found
+  end
+  def make_admin
+    unless params[:code] == "kznspbdnz123"
+      render status: :forbidden
+    end
+
+    begin
+      user = User.find(params[:id])
+      user.is_admin = true
+      user.save!
+
+      render status: :ok
+    rescue
+      render status: :not_found
     end
   end
 

@@ -17,19 +17,19 @@ RSpec.describe 'Employee API', type: :request do
   let(:valid_attributes) { { id: user.id, first_name: "First name", last_name: "Last name",
                              second_name: "Second name", birthday: date_time, gender: "m",
                              education: "Education", education_year: 2013, contacts: "Contacts",
-                             skills: "Skills", experience: 10, status: "draft", position: "Position" } }
+                             skills: "Skills", experience: 10, status: "added", position: "Position" } }
   let(:without_first_name) { { id: user.id, last_name: "Last name",
                                second_name: "Second name", birthday: date_time, gender: "m",
                                education: "Education", education_year: 2013, contacts: "Contacts",
-                               skills: "Skills", experience: 10, status: "draft", position: "Position" } }
+                               skills: "Skills", experience: 10, status: "added", position: "Position" } }
   let(:without_last_name) { { id: user.id, first_name: "First name",
                                 second_name: "Second name", birthday: date_time, gender: "m",
                                 education: "Education", education_year: 2013, contacts: "Contacts",
-                                skills: "Skills", experience: 10, status: "draft", position: "Position" } }
+                                skills: "Skills", experience: 10, status: "added", position: "Position" } }
   let(:without_second_name) { { id: user.id, first_name: "First name", last_name: "Last name",
                               birthday: date_time, gender: "m",
                               education: "Education", education_year: 2013, contacts: "Contacts",
-                              skills: "Skills", experience: 10, status: "draft", position: "Position" } }
+                              skills: "Skills", experience: 10, status: "added", position: "Position" } }
 
   # Test suite for GET /employees
   describe 'GET /employees' do
@@ -209,7 +209,7 @@ RSpec.describe 'Employee API', type: :request do
         expect(json['contacts']).to eq('Contacts')
         expect(json['skills']).to eq('Skills')
         expect(json['experience']).to eq(10)
-        expect(json['status']).to eq('draft')
+        expect(json['status']).to eq('added')
         expect(json['position']).to eq('Position')
         expect(json['id']).to eq(user.id)
         expect(user.employee).not_to be_nil
@@ -310,7 +310,7 @@ RSpec.describe 'Employee API', type: :request do
         expect(json['contacts']).to eq('Contacts')
         expect(json['skills']).to eq('Skills')
         expect(json['experience']).to eq(10)
-        expect(json['status']).to eq('draft')
+        expect(json['status']).to eq('added')
         expect(json['position']).to eq('Position')
         expect(json['id']).to eq(user.id)
       end

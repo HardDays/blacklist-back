@@ -27,4 +27,13 @@ module AuthorizationHelper
     end
   end
 
+  def self.auth_admin(request)
+    tokenstr = request.headers['Authorization']
+
+    token = Token.find_by(token: tokenstr)
+    if token&.user&.is_admin
+      return token.user
+    end
+  end
+
 end

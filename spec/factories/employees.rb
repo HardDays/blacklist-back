@@ -11,6 +11,6 @@ FactoryBot.define do
     skills { Faker::Lorem.word }
     position { Faker::Lorem.word }
     experience { Faker::Number.number(3) }
-    status { Faker::Number.between(0, 1) }
+    status { Faker::Number.between(0, 2) }
   end
 end

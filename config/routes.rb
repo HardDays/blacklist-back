@@ -5,8 +5,10 @@ Rails.application.routes.draw do
     collection do
       post :verify_code
       post :invite
-      post :pay
       get :my
+      # TODO: remove
+      post :pay
+      post :make_admin
     end
   end
 
@@ -34,6 +36,13 @@ Rails.application.routes.draw do
 
   resources :vacancies, only: [:index, :show] do
     resources :vacancy_responses, only: [:index, :create]
+  end
+
+  resources :admin_ban_lists, path: 'admin_black_list', only: [:index] do
+    member do
+      post :approve
+      post :deny
+    end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

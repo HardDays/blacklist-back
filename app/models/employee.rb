@@ -8,7 +8,7 @@ class Employee < ApplicationRecord
   has_many :vacancy_responses, dependent: :destroy
   has_many :employee_offers, dependent: :destroy
 
-  enum status: [:draft, :posted]
+  enum status: [:added, :approved, :denied]
   enum gender: [:m, :f]
 
   def as_json(options={})
