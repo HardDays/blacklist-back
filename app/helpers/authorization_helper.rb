@@ -18,4 +18,13 @@ module AuthorizationHelper
     end
   end
 
+  def self.auth_payed_user_without_id(request)
+    tokenstr = request.headers['Authorization']
+
+    token = Token.find_by(token: tokenstr)
+    if token&.user&.is_payed
+      return token.user
+    end
+  end
+
 end

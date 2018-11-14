@@ -46,7 +46,7 @@
       "path": "/users/invite.json",
       "operations": [
         {
-          "summary": "Verify user code",
+          "summary": "Invite user",
           "parameters": [
             {
               "paramType": "form",
@@ -69,6 +69,37 @@
             }
           ],
           "nickname": "Users#invite",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/users/pay.json",
+      "operations": [
+        {
+          "summary": "Pay for user",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Users#pay",
           "method": "post"
         }
       ]

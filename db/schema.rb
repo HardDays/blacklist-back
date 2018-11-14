@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_14_121650) do
+ActiveRecord::Schema.define(version: 2018_11_14_123611) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 2018_11_14_121650) do
     t.string "contacts"
     t.string "skills"
     t.integer "experience"
-    t.integer "status"
+    t.integer "status", default: 0
     t.integer "user_id"
     t.string "position"
     t.datetime "created_at", null: false
@@ -85,14 +85,13 @@ ActiveRecord::Schema.define(version: 2018_11_14_121650) do
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "password"
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
     t.string "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "image_id"
+    t.boolean "is_payed", default: false
   end
 
   create_table "vacancies", force: :cascade do |t|

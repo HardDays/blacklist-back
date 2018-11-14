@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authorize_user, only: [:update]
-  before_action :auth_and_set_user, only: [:my]
+  before_action :auth_user_without_id, only: [:my, :pay]
   before_action :set_user, only: [:show]
   swagger_controller :users, "Users"
 
@@ -58,7 +58,7 @@ class UsersController < ApplicationController
 
   # POST /users/invite
   swagger_api :invite do
-    summary "Verify user code"
+    summary "Invite user"
     param :form, :email, :string, :required, "Email"
     response :ok
     response :unprocessable_entity
@@ -70,6 +70,24 @@ class UsersController < ApplicationController
     if user.save
       InvitationMailer.invitation_email(params[:email], token).deliver
 
+      render status: :ok
+    else
+      render json: user.errors, status: :unprocessable_entity
+    end
+  end
+
+
+  # POST /users/:id/pay
+  swagger_api :pay do
+    summary "Pay for user"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :ok
+    response :unprocessable_entity
+  end
+  def pay
+    @user.is_payed = true
+
+    if user.save
       render status: :ok
     else
       render json: user.errors, status: :unprocessable_entity
@@ -161,7 +179,7 @@ class UsersController < ApplicationController
     end
   end
 
-  def auth_and_set_user
+  def auth_user_without_id
     @user = AuthorizationHelper.auth_user_without_id(request)
 
     unless @user

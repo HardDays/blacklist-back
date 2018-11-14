@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     collection do
       post :verify_code
       post :invite
+      post :pay
       get :my
     end
   end
