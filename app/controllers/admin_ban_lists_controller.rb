@@ -29,7 +29,7 @@ class AdminBanListsController < ApplicationController
     param :path, :id, :integer, :required, "Item id"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
-    response_code :forbidden
+    response :forbidden
     response :not_found
   end
   def approve

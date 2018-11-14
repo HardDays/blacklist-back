@@ -74,6 +74,37 @@
       ]
     },
     {
+      "path": "/users/my.json",
+      "operations": [
+        {
+          "summary": "Get user info",
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Users#my",
+          "method": "get"
+        }
+      ]
+    },
+    {
       "path": "/users/pay.json",
       "operations": [
         {
@@ -105,16 +136,23 @@
       ]
     },
     {
-      "path": "/users/my.json",
+      "path": "/users/make_admin.json",
       "operations": [
         {
-          "summary": "Get user info",
+          "summary": "Make user admin",
           "parameters": [
             {
-              "paramType": "header",
-              "name": "Authorization",
+              "paramType": "form",
+              "name": "id",
+              "type": "integer",
+              "description": "User id",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "code",
               "type": "string",
-              "description": "Authentication token",
+              "description": "Auth code",
               "required": true
             }
           ],
@@ -125,13 +163,18 @@
               "message": "Ok"
             },
             {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
               "code": 404,
               "responseModel": null,
               "message": "Not Found"
             }
           ],
-          "nickname": "Users#my",
-          "method": "get"
+          "nickname": "Users#make_admin",
+          "method": "post"
         }
       ]
     },
