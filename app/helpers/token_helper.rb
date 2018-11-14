@@ -18,7 +18,6 @@ module TokenHelper
 
   def self.generate_register_token
     token = SecureRandom.hex[0..4]
-    token = '0000'
     return token
   end
 end

@@ -56,6 +56,26 @@ class UsersController < ApplicationController
     end
   end
 
+  # POST /users/invite
+  swagger_api :invite do
+    summary "Verify user code"
+    param :form, :email, :string, :required, "Email"
+    response :ok
+    response :unprocessable_entity
+  end
+  def invite
+    token = TokenHelper.generate_register_token
+    user = User.new(email: params[:email], confirmation_token: token, confirmation_sent_at: DateTime.now)
+
+    if user.save
+      InvitationMailer.invitation_email(params[:email], token).deliver
+
+      render status: :ok
+    else
+      render json: user.errors, status: :unprocessable_entity
+    end
+  end
+
   # POST /users
   swagger_api :create do
     summary "Register user"

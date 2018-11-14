@@ -6,6 +6,7 @@ RSpec.describe 'Users API', type: :request do
   let(:user_id) { users.first.id }
   let(:user) { users.first }
 
+  let(:email) { Faker::Internet.email }
   let(:auth_user) { create(:user, password: "123123") }
 
   # Test suite for GET /users/:id
@@ -110,6 +111,63 @@ RSpec.describe 'Users API', type: :request do
       it 'returns a validation failure message' do
         expect(response.body)
           .to match("")
+      end
+    end
+  end
+
+  # Test suite for POST /users/invite
+  describe 'POST /users/invite' do
+    # valid payload
+    let(:valid_attributes) { { email: email } }
+
+    context 'when the request is valid' do
+      before { post '/users/invite', params: valid_attributes }
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when the code is invalid' do
+      before { post '/users/invite' }
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body)
+          .to match("{\"email\":[\"can't be blank\"]}")
+      end
+    end
+
+    context 'when user already exists' do
+      before { post '/users/invite', params: { code: 0, email: user.email } }
+
+      it 'returns status code 422' do
+        expect(response).to have_http_status(422)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body)
+          .to match("{\"email\":[\"has already been taken\"]}")
+      end
+    end
+
+    context 'when the email is valid' do
+      before do
+        post '/users/invite', params: { email: email }
+
+        new_user = User.last
+        post "/users/verify_code", params: { email: email, code: new_user.confirmation_token}
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+
+      it 'can verify code after invitation' do
+        expect(json["email"]).to match(email)
       end
     end
   end

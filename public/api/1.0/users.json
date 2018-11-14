@@ -43,6 +43,37 @@
       ]
     },
     {
+      "path": "/users/invite.json",
+      "operations": [
+        {
+          "summary": "Verify user code",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "email",
+              "type": "string",
+              "description": "Email",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Users#invite",
+          "method": "post"
+        }
+      ]
+    },
+    {
       "path": "/users/my.json",
       "operations": [
         {
