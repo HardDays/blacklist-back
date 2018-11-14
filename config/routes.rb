@@ -44,5 +44,12 @@ Rails.application.routes.draw do
       post :deny
     end
   end
+
+  resources :admin_employees, only: [:index] do
+    member do
+      post :approve
+      post :deny
+    end
+  end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

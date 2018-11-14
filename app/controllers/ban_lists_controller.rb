@@ -21,6 +21,7 @@ class BanListsController < ApplicationController
     param :form, :name, :string, :required, "Name"
     param :form, :description, :string, :required, "Description/Position"
     param :form, :addresses, :string, :optional, "Work addresses/Addresses"
+    param :form, :text, :string, :optional, "Additional text"
     response :ok
     response :forbidden
   end
@@ -46,6 +47,6 @@ class BanListsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def ban_list_params
-      params.permit(:name, :description, :addresses)
+      params.permit(:name, :description, :addresses, :text)
     end
 end

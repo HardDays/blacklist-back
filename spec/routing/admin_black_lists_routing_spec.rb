@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe BanListsController, type: :routing do
+RSpec.describe AdminBanListsController, type: :routing do
   describe "routing" do
     it "routes to #index" do
       expect(:get => "/admin_black_list").to route_to("admin_ban_lists#index")

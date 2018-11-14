@@ -63,6 +63,13 @@
               "type": "string",
               "description": "Work addresses/Addresses",
               "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "text",
+              "type": "string",
+              "description": "Additional text",
+              "required": false
             }
           ],
           "responseMessages": [

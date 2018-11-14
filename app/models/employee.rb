@@ -28,6 +28,7 @@ class Employee < ApplicationRecord
       attrs[:last_name] = last_name
       attrs[:position] = position
       attrs[:experience] = experience
+      attrs[:status] = status
 
       return attrs
     end

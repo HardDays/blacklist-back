@@ -5,23 +5,31 @@ RSpec.describe 'Admin ban list API', type: :request do
   let!(:admin_user)  { create(:user, password: password, is_admin: true) }
   let(:not_admin_user) { create(:user, password: password) }
 
-  let!(:ban_list) { create_list(:ban_list, 10) }
-  let(:item) { ban_list.first }
-  let(:item_id) { item.id }
+  let!(:user)  { create(:user, password: password) }
+  let!(:employee) { create(:employee, user_id: user.id, status: "added") }
+  let(:employee_id) { employee.user_id }
 
-  # Test suite for GET /admin_black_list
-  describe 'GET /admin_black_list' do
+  let!(:user2)  { create(:user, password: password) }
+  let!(:employee2) { create(:employee, user_id: user2.id, status: "approved") }
+  let(:employee_id2) { employee2.user_id }
+
+  let!(:user3)  { create(:user, password: password) }
+  let!(:employee3) { create(:employee, user_id: user3.id, status: "denied") }
+  let(:employee_id3) { employee3.user_id }
+
+  # Test suite for GET /admin_employees
+  describe 'GET /admin_employees' do
     context 'when simply get' do
       before do
         post "/auth/login", params: { email: admin_user.email, password: password }
         token = json['token']
 
-        get "/admin_black_list", headers: { 'Authorization': token }
+        get "/admin_employees", headers: { 'Authorization': token }
       end
 
-      it "return all in black list" do
+      it "return all employees" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(10)
+        expect(json.size).to eq(3)
       end
 
       it 'returns status code 200' do
@@ -34,7 +42,7 @@ RSpec.describe 'Admin ban list API', type: :request do
         post "/auth/login", params: { email: admin_user.email, password: password }
         token = json['token']
 
-        get "/admin_black_list", params: { status: "added" }, headers: { 'Authorization': token }
+        get "/admin_employees", params: { status: "added" }, headers: { 'Authorization': token }
       end
 
       it "returns ban list" do
@@ -51,7 +59,7 @@ RSpec.describe 'Admin ban list API', type: :request do
         post "/auth/login", params: { email: admin_user.email, password: password }
         token = json['token']
 
-        get "/admin_black_list", params: { status: "approved" }, headers: { 'Authorization': token }
+        get "/admin_employees", params: { status: "approved" }, headers: { 'Authorization': token }
       end
 
       it "returns employee" do
@@ -68,7 +76,7 @@ RSpec.describe 'Admin ban list API', type: :request do
         post "/auth/login", params: { email: admin_user.email, password: password }
         token = json['token']
 
-        get "/admin_black_list", params: { status: "denied" }, headers: { 'Authorization': token }
+        get "/admin_employees", params: { status: "denied" }, headers: { 'Authorization': token }
       end
 
       it "returns employee" do
@@ -85,12 +93,12 @@ RSpec.describe 'Admin ban list API', type: :request do
         post "/auth/login", params: { email: admin_user.email, password: password }
         token = json['token']
 
-        get "/admin_black_list", params: { limit: 5 }, headers: { 'Authorization': token }
+        get "/admin_employees", params: { limit: 2 }, headers: { 'Authorization': token }
       end
 
       it "returns 5 items" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(5)
+        expect(json.size).to eq(2)
       end
 
       it 'returns status code 200' do
@@ -103,12 +111,12 @@ RSpec.describe 'Admin ban list API', type: :request do
         post "/auth/login", params: { email: admin_user.email, password: password }
         token = json['token']
 
-        get "/admin_black_list", params: { offset: 2 }, headers: { 'Authorization': token }
+        get "/admin_employees", params: { offset: 1 }, headers: { 'Authorization': token }
       end
 
       it "returns items" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(8)
+        expect(json.size).to eq(2)
       end
 
       it 'returns status code 200' do
@@ -121,7 +129,7 @@ RSpec.describe 'Admin ban list API', type: :request do
         post "/auth/login", params: { email: not_admin_user.email, password: password }
         token = json['token']
 
-        get "/admin_black_list", headers: { 'Authorization': token }
+        get "/admin_employees", headers: { 'Authorization': token }
       end
 
       it "return nothing" do
@@ -134,19 +142,19 @@ RSpec.describe 'Admin ban list API', type: :request do
     end
   end
 
-  # Test suite for POST /admin_black_list/1/approve
-  describe 'POST /admin_black_list/:id/approve' do
+  # Test suite for POST /admin_employees/1/approve
+  describe 'POST /admin_employees/:id/approve' do
     context 'when the record exists' do
       before do
         post "/auth/login", params: { email: admin_user.email, password: password }
         token = json['token']
 
-        post "/admin_black_list/#{item_id}/approve", headers: { 'Authorization': token }
+        post "/admin_employees/#{employee_id}/approve", headers: { 'Authorization': token }
       end
 
       it 'returns changes the status' do
         expect(json).not_to be_empty
-        expect(json['id']).to eq(item_id)
+        expect(json['id']).to eq(employee_id)
         expect(json['status']).to eq("approved")
       end
 
@@ -156,13 +164,13 @@ RSpec.describe 'Admin ban list API', type: :request do
     end
 
     context 'when the record does not exist' do
-      let(:item_id) { 0 }
+      let(:employee_id) { 0 }
 
       before do
         post "/auth/login", params: { email: admin_user.email, password: password }
         token = json['token']
 
-        post "/admin_black_list/#{item_id}/approve", headers: { 'Authorization': token }
+        post "/admin_employees/#{employee_id}/approve", headers: { 'Authorization': token }
       end
 
       it 'returns nothing' do
@@ -179,7 +187,7 @@ RSpec.describe 'Admin ban list API', type: :request do
         post "/auth/login", params: { email: not_admin_user.email, password: password }
         token = json['token']
 
-        post "/admin_black_list/#{item_id}/approve", headers: { 'Authorization': token }
+        post "/admin_employees/#{employee_id}/approve", headers: { 'Authorization': token }
       end
 
       it 'returns nothing' do
@@ -192,19 +200,19 @@ RSpec.describe 'Admin ban list API', type: :request do
     end
   end
 
-  # Test suite for POST /admin_black_list/1/deny
-  describe 'POST /admin_black_list/:id/deny' do
+  # Test suite for POST /admin_employees/1/deny
+  describe 'POST /admin_employees/:id/deny' do
     context 'when the record exists' do
       before do
         post "/auth/login", params: { email: admin_user.email, password: password }
         token = json['token']
 
-        post "/admin_black_list/#{item_id}/deny", headers: { 'Authorization': token }
+        post "/admin_employees/#{employee_id}/deny", headers: { 'Authorization': token }
       end
 
       it 'returns changes the status' do
         expect(json).not_to be_empty
-        expect(json['id']).to eq(item_id)
+        expect(json['id']).to eq(employee_id)
         expect(json['status']).to eq("denied")
       end
 
@@ -214,13 +222,13 @@ RSpec.describe 'Admin ban list API', type: :request do
     end
 
     context 'when the record does not exist' do
-      let(:item_id) { 0 }
+      let(:employee_id) { 0 }
 
       before do
         post "/auth/login", params: { email: admin_user.email, password: password }
         token = json['token']
 
-        post "/admin_black_list/#{item_id}/deny", headers: { 'Authorization': token }
+        post "/admin_employees/#{employee_id}/deny", headers: { 'Authorization': token }
       end
 
       it 'returns nothing' do
@@ -237,7 +245,7 @@ RSpec.describe 'Admin ban list API', type: :request do
         post "/auth/login", params: { email: not_admin_user.email, password: password }
         token = json['token']
 
-        post "/admin_black_list/#{item_id}/deny", headers: { 'Authorization': token }
+        post "/admin_employees/#{employee_id}/deny", headers: { 'Authorization': token }
       end
 
       it 'returns nothing' do
