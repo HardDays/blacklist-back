@@ -202,6 +202,13 @@
               "type": "integer",
               "description": "User id",
               "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
             }
           ],
           "responseMessages": [
