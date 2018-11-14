@@ -3,13 +3,15 @@ require 'rails_helper'
 RSpec.describe 'Employee API', type: :request do
   let(:date_time) { Time.now }
   let(:password) { "123123" }
-  let!(:user)  { create(:user, password: password) }
+  let!(:user)  { create(:user, password: password, is_payed: true) }
   let!(:employee) { create(:employee, user_id: user.id) }
   let(:employee_id) { employee.user_id }
 
   let!(:user2)  { create(:user, password: password) }
   let!(:employee2) { create(:employee, user_id: user2.id) }
   let(:employee_id2) { employee2.user_id }
+
+  let(:not_payed_user) { create(:user, password: password) }
 
 
   let(:valid_attributes) { { id: user.id, first_name: "First name", last_name: "Last name",
@@ -32,7 +34,12 @@ RSpec.describe 'Employee API', type: :request do
   # Test suite for GET /employees
   describe 'GET /employees' do
     context 'when simply get' do
-      before { get "/employees" }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", headers: { 'Authorization': token }
+      end
 
       it "return all employees" do
         expect(json).not_to be_empty
@@ -45,7 +52,12 @@ RSpec.describe 'Employee API', type: :request do
     end
 
     context 'when search first_name' do
-      before { get "/employees", params: { text: employee.first_name } }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { text: employee.first_name}, headers: { 'Authorization': token }
+      end
 
       it "returns employee" do
         expect(json[0]['id']).to eq(employee_id)
@@ -57,7 +69,12 @@ RSpec.describe 'Employee API', type: :request do
     end
 
     context 'when search second_name' do
-      before { get "/employees", params: { text: employee.second_name } }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { text: employee.second_name }, headers: { 'Authorization': token }
+      end
 
       it "returns employee" do
         expect(json[0]['id']).to eq(employee_id)
@@ -69,7 +86,12 @@ RSpec.describe 'Employee API', type: :request do
     end
 
     context 'when search last_name' do
-      before { get "/employees", params: { text: employee.last_name} }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { text: employee.last_name}, headers: { 'Authorization': token }
+      end
 
       it "returns employee" do
         expect(json[0]['id']).to eq(employee_id)
@@ -81,7 +103,12 @@ RSpec.describe 'Employee API', type: :request do
     end
 
     context 'when use limit' do
-      before { get "/employees", params: { limit: 1 } }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { limit: 1 }, headers: { 'Authorization': token }
+      end
 
       it "returns 5 employee" do
         expect(json).not_to be_empty
@@ -94,7 +121,12 @@ RSpec.describe 'Employee API', type: :request do
     end
 
     context 'when use offset' do
-      before { get "/employees", params: { offset: 1 } }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { offset: 1 }, headers: { 'Authorization': token }
+      end
 
       it "returns employees" do
         expect(json).not_to be_empty
@@ -104,6 +136,25 @@ RSpec.describe 'Employee API', type: :request do
 
       it 'returns status code 200' do
         expect(response).to have_http_status(200)
+      end
+    end
+
+
+
+    context 'when user not payed' do
+      before do
+        post "/auth/login", params: { email: not_payed_user.email, password: password }
+        token = json['token']
+
+        get "/employees", headers: { 'Authorization': token }
+      end
+
+      it "return nothing" do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
       end
     end
   end

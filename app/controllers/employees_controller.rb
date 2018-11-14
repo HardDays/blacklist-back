@@ -1,4 +1,5 @@
 class EmployeesController < ApplicationController
+  before_action :auth_payed_user, only: [:index]
   before_action :auth_and_set_employee, only: [:create, :update]
   before_action :set_employee, only: [:show]
   swagger_controller :employee, "Employees"
@@ -110,6 +111,14 @@ class EmployeesController < ApplicationController
     end
 
     @employee = @user.employee
+  end
+
+  def auth_payed_user
+    @user = AuthorizationHelper.auth_payed_user_without_id(request)
+
+    unless @user
+      render status: :forbidden and return
+    end
   end
 
   def search_text
