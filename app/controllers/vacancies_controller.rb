@@ -2,6 +2,7 @@ class VacanciesController < ApplicationController
   before_action :authorize_user, only: [:create, :update]
   before_action :set_company, only: [:create, :update]
   before_action :set_vacancy, only: [:update]
+  before_action :auth_user_without_id, only: [:index, :show]
   swagger_controller :vacancy, "Vacancy"
 
   # GET /vacancies
@@ -10,6 +11,7 @@ class VacanciesController < ApplicationController
     param :query, :text, :string, :optional, "Text to search"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
   end
   def index
@@ -23,6 +25,7 @@ class VacanciesController < ApplicationController
   swagger_api :show do
     summary "Retrieve vacancy info"
     param :path, :id, :integer, :required, "Vacancy id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
   end
@@ -101,6 +104,14 @@ class VacanciesController < ApplicationController
     @user = AuthorizationHelper.auth_user(request, params[:company_id])
 
     unless @user
+      render status: :forbidden and return
+    end
+  end
+
+  def auth_user_without_id
+    user = AuthorizationHelper.auth_user_without_id(request)
+
+    unless user
       render status: :forbidden and return
     end
   end

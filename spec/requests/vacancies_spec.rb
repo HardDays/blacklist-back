@@ -23,7 +23,12 @@ RSpec.describe 'Vacancies API', type: :request do
   # Test suite for GET /vacancies
   describe 'GET /vacancies' do
     context 'when simply get' do
-      before { get "/vacancies" }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/vacancies", headers: { 'Authorization': token }
+      end
 
       it "return all vacancies" do
         expect(json).not_to be_empty
@@ -36,7 +41,12 @@ RSpec.describe 'Vacancies API', type: :request do
     end
 
     context 'when search position' do
-      before { get "/vacancies", params: { text: vacancy.position} }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/vacancies", params: { text: vacancy.position}, headers: { 'Authorization': token }
+      end
 
       it "returns employee" do
         expect(json[0]['id']).to eq(vacancy_id)
@@ -48,7 +58,12 @@ RSpec.describe 'Vacancies API', type: :request do
     end
 
     context 'when use limit' do
-      before { get "/vacancies", params: { limit: 1 } }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/vacancies", params: { limit: 1 }, headers: { 'Authorization': token }
+      end
 
       it "returns 5 employee" do
         expect(json).not_to be_empty
@@ -61,7 +76,12 @@ RSpec.describe 'Vacancies API', type: :request do
     end
 
     context 'when use offset' do
-      before { get "/vacancies", params: { offset: 1 } }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/vacancies", params: { offset: 1 }, headers: { 'Authorization': token }
+      end
 
       it "returns employees" do
         expect(json).not_to be_empty
@@ -73,13 +93,32 @@ RSpec.describe 'Vacancies API', type: :request do
         expect(response).to have_http_status(200)
       end
     end
+
+    context 'when not authorized' do
+      before do
+        get "/vacancies"
+      end
+
+      it "returns empty message" do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
   end
 
 
   # Test suite for GET /vacancies/:id
   describe 'GET /vacancies/:id' do
     context 'when the record exists' do
-      before { get "/vacancies/#{vacancy_id}" }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/vacancies/#{vacancy_id}", headers: { 'Authorization': token }
+      end
 
       it 'returns the vacancy' do
         expect(json).not_to be_empty
@@ -94,10 +133,29 @@ RSpec.describe 'Vacancies API', type: :request do
     context 'when the record does not exist' do
       let(:vacancy_id) { 0 }
 
-      before { get "/vacancies/#{vacancy_id}" }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/vacancies/#{vacancy_id}", headers: { 'Authorization': token }
+      end
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when not authorized' do
+      before do
+        get "/vacancies/#{vacancy_id}"
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
       end
 
       it 'returns a not found message' do

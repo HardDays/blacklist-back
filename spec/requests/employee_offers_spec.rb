@@ -15,8 +15,6 @@ RSpec.describe "EmployeeOffers", type: :request do
   let!(:company) { create(:company, user_id: company_user.id) }
   let(:company_id) { company.user_id }
 
-  let(:not_payed_user) { create(:user, password: password) }
-
   let!(:employee_offer1) { create(:employee_offer, employee_id: employee.id, company_id: company.id) }
   let!(:employee_offer2) { create(:employee_offer, employee_id: employee.id, company_id: company.id) }
 
@@ -82,7 +80,10 @@ RSpec.describe "EmployeeOffers", type: :request do
 
     context 'when user not payed' do
       before do
-        post "/auth/login", params: { email: not_payed_user.email, password: password }
+        employee_user.is_payed = false
+        employee_user.save
+
+        post "/auth/login", params: { email: employee_user.email, password: password }
         token = json['token']
 
         get "/employees/#{employee_id}/employee_offers", headers: { 'Authorization': token }
@@ -130,6 +131,20 @@ RSpec.describe "EmployeeOffers", type: :request do
         expect(response).to have_http_status(403)
       end
     end
+
+    context 'when not authorized' do
+      before do
+        get "/employees/#{employee_id}/employee_offers"
+      end
+
+      it "return nothing" do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
   end
 
   # Test suite for GET /employees/1/employee_offers/1
@@ -153,7 +168,10 @@ RSpec.describe "EmployeeOffers", type: :request do
 
     context 'when user not payed' do
       before do
-        post "/auth/login", params: { email: not_payed_user.email, password: password }
+        employee_user.is_payed = false
+        employee_user.save
+
+        post "/auth/login", params: { email: employee_user.email, password: password }
         token = json['token']
 
         get "/employees/#{employee_id}/employee_offers/#{employee_offer1.id}", headers: { 'Authorization': token }
@@ -187,6 +205,7 @@ RSpec.describe "EmployeeOffers", type: :request do
 
     context 'when offer not exists' do
       let(:employee_offer_id) { 0 }
+
       before do
         post "/auth/login", params: { email: employee_user.email, password: password }
         token = json['token']
@@ -200,6 +219,20 @@ RSpec.describe "EmployeeOffers", type: :request do
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'when not authorized' do
+      before do
+        get "/employees/#{employee_id}/employee_offers/#{employee_offer1.id}"
+      end
+
+      it "return nothing" do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
       end
     end
   end
@@ -281,10 +314,27 @@ RSpec.describe "EmployeeOffers", type: :request do
 
     context 'when the user not payed' do
       before do
-        post "/auth/login", params: { email: not_payed_user.email, password: password}
+        company_user.is_payed = false
+        company_user.save
+
+        post "/auth/login", params: { email: company_user.email, password: password}
         token = json['token']
 
         post "/employees/#{employee_id}/employee_offers", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'returns empty message' do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when the user not authorized' do
+      before do
+        post "/employees/#{employee_id}/employee_offers", params: valid_attributes
       end
 
       it 'returns empty message' do

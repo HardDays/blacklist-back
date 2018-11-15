@@ -1,10 +1,12 @@
 class ImagesController < ApplicationController
   before_action :authorize_user, only: [:create, :destroy]
+  before_action :auth_user_without_id, only: [:show, :get_with_size]
   swagger_controller :images, "Images"
 
   swagger_api :show do
     summary "Get full image"
     param :path, :id, :integer, :required, "Image id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
   end
   def show
@@ -20,6 +22,7 @@ class ImagesController < ApplicationController
   swagger_api :get_with_size do
     summary "Get full image with size"
     param :path, :id, :integer, :required, "Image id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
     response :not_found
   end
   def get_with_size
@@ -93,6 +96,14 @@ class ImagesController < ApplicationController
     @user = AuthorizationHelper.auth_user(request, params[:user_id])
 
     if @user == nil
+      render status: :forbidden and return
+    end
+  end
+
+  def auth_user_without_id
+    user = AuthorizationHelper.auth_user_without_id(request)
+
+    if user == nil
       render status: :forbidden and return
     end
   end

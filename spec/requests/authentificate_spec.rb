@@ -101,7 +101,6 @@ RSpec.describe 'Auth API', type: :request do
       end
     end
 
-
     context 'when everything right' do
       before do
         post "/auth/forgot_password", params: { email: user.email }

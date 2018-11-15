@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authorize_user, only: [:update]
-  before_action :auth_user_without_id, only: [:my, :pay]
+  before_action :auth_user_without_id, only: [:my, :pay, :show, :invite]
   before_action :set_user, only: [:show]
   swagger_controller :users, "Users"
 
@@ -8,6 +8,7 @@ class UsersController < ApplicationController
   swagger_api :show do
     summary "Get user info"
     param :path, :id, :integer, :required, "User id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
   end
@@ -60,6 +61,7 @@ class UsersController < ApplicationController
   swagger_api :invite do
     summary "Invite user"
     param :form, :email, :string, :required, "Email"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :unprocessable_entity
   end
@@ -125,6 +127,7 @@ class UsersController < ApplicationController
     summary "Register user"
     param :form, :email, :string, :required, "User email"
     response :ok
+    response :unprocessable_entity
   end
   def create
     ActiveRecord::Base.transaction do
@@ -136,7 +139,7 @@ class UsersController < ApplicationController
       if user.save
         ConfirmationMailer.confirmation_email(params[:email], token).deliver
 
-        render json: user, status: :created
+        render json: user, status: :ok
       else
         render json: user.errors, status: :unprocessable_entity
       end

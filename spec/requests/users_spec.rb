@@ -2,18 +2,23 @@ require 'rails_helper'
 
 RSpec.describe 'Users API', type: :request do
   # initialize test data
-  let!(:users) { create_list(:user, 10) }
-  let(:user_id) { users.first.id }
-  let(:user) { users.first }
+  let(:password) { "123123" }
+  let(:user) { create(:user, password: password) }
+  let(:user_id) { user.id }
 
   let(:email) { Faker::Internet.email }
   let(:auth_user) { create(:user, password: "123123") }
 
   # Test suite for GET /users/:id
   describe 'GET /users/:id' do
-    before { get "/users/#{user_id}" }
-
     context 'when the record exists' do
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/users/#{user_id}", headers: { 'Authorization': token}
+      end
+
       it 'returns the user' do
         expect(json).not_to be_empty
         expect(json['id']).to eq(user_id)
@@ -26,9 +31,29 @@ RSpec.describe 'Users API', type: :request do
 
     context 'when the record does not exist' do
       let(:user_id) { 0 }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/users/#{user_id}", headers: { 'Authorization': token}
+      end
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when not authorized' do
+      before do
+        get "/users/#{user_id}"
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
       end
 
       it 'returns a not found message' do
@@ -102,7 +127,7 @@ RSpec.describe 'Users API', type: :request do
     end
 
     context 'when the email is invalid' do
-      before { get '/users/verify_code', params: { code: user.confirmation_token, email: "aaa.aaa" } }
+      before { post '/users/verify_code', params: { code: user.confirmation_token, email: "aaa.aaa" } }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
@@ -121,7 +146,12 @@ RSpec.describe 'Users API', type: :request do
     let(:valid_attributes) { { email: email } }
 
     context 'when the request is valid' do
-      before { post '/users/invite', params: valid_attributes }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        post '/users/invite', params: valid_attributes, headers: { 'Authorization': token }
+      end
 
       it 'returns status code 200' do
         expect(response).to have_http_status(200)
@@ -129,7 +159,12 @@ RSpec.describe 'Users API', type: :request do
     end
 
     context 'when the code is invalid' do
-      before { post '/users/invite' }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        post '/users/invite', headers: { 'Authorization': token }
+      end
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -142,7 +177,12 @@ RSpec.describe 'Users API', type: :request do
     end
 
     context 'when user already exists' do
-      before { post '/users/invite', params: { code: 0, email: user.email } }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        post '/users/invite', params: { code: 0, email: user.email }, headers: { 'Authorization': token }
+      end
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -154,9 +194,26 @@ RSpec.describe 'Users API', type: :request do
       end
     end
 
+    context 'when not authorized' do
+      before do
+        post '/users/invite', params: valid_attributes
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'returns empty message' do
+        expect(response.body).to match("")
+      end
+    end
+
     context 'when the email is valid' do
       before do
-        post '/users/invite', params: { email: email }
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        post '/users/invite', params: { email: email }, headers: { 'Authorization': token}
 
         new_user = User.last
         post "/users/verify_code", params: { email: email, code: new_user.confirmation_token}
@@ -178,7 +235,12 @@ RSpec.describe 'Users API', type: :request do
     let(:valid_attributes) { { email: 'aaa@aaa.com' } }
 
     context 'when the request is valid' do
-      before { post '/users', params: valid_attributes }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        post '/users', params: valid_attributes, headers: { 'Authorization': token }
+      end
 
       it 'creates a user' do
         expect(json['email']).to eq('aaa@aaa.com')
@@ -186,13 +248,18 @@ RSpec.describe 'Users API', type: :request do
         expect(user.confirmation_sent_at).not_to be_nil
       end
 
-      it 'returns status code 201' do
-        expect(response).to have_http_status(201)
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
       end
     end
 
     context 'when the request is invalid' do
-      before { post '/users', params: { email: '' } }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        post '/users', params: { email: '' }, headers: { 'Authorization': token }
+      end
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -268,6 +335,10 @@ RSpec.describe 'Users API', type: :request do
 
       it 'returns status code 403' do
         expect(response).to have_http_status(403)
+      end
+
+      it 'returns empty message' do
+        expect(response.body).to match("")
       end
     end
   end

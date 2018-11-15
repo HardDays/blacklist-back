@@ -13,7 +13,12 @@ RSpec.describe 'Image API', type: :request do
   # Test suite for GET /images/:id
   describe 'GET /images/:id' do
     context 'when the record exists' do
-      before { get "/images/#{image_id}" }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/images/#{image_id}" , headers: { 'Authorization': token }
+      end
 
       it 'returns status code 200' do
         expect(response).to have_http_status(200)
@@ -23,10 +28,29 @@ RSpec.describe 'Image API', type: :request do
     context 'when the record does not exist' do
       let(:image_id) { 0 }
 
-      before { get "/images/#{image_id}" }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/images/#{image_id}", headers: { 'Authorization': token }
+      end
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when not authorized' do
+      before do
+        get "/images/#{image_id}"
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
       end
 
       it 'returns a not found message' do
@@ -38,7 +62,12 @@ RSpec.describe 'Image API', type: :request do
   # Test suite for GET /images/:id/get_with_size
   describe 'GET /images/:id/get_with_size' do
     context 'when the record exists' do
-      before { get "/images/#{image_id}/get_with_size" }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/images/#{image_id}/get_with_size", headers: { 'Authorization': token }
+      end
 
       it 'response not empty' do
         expect(json).not_to be_nil
@@ -52,10 +81,29 @@ RSpec.describe 'Image API', type: :request do
     context 'when the record does not exist' do
       let(:image_id) { 0 }
 
-      before { get "/images/#{image_id}/get_with_size" }
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/images/#{image_id}/get_with_size", headers: { 'Authorization': token }
+      end
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when not authorized' do
+      before do
+        get "/images/#{image_id}/get_with_size"
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
       end
 
       it 'returns a not found message' do

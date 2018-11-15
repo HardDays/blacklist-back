@@ -11,9 +11,6 @@ RSpec.describe 'Employee API', type: :request do
   let!(:employee2) { create(:employee, user_id: user2.id) }
   let(:employee_id2) { employee2.user_id }
 
-  let(:not_payed_user) { create(:user, password: password) }
-
-
   let(:valid_attributes) { { id: user.id, first_name: "First name", last_name: "Last name",
                              second_name: "Second name", birthday: date_time, gender: "m",
                              education: "Education", education_year: 2013, contacts: "Contacts",
@@ -141,10 +138,27 @@ RSpec.describe 'Employee API', type: :request do
 
     context 'when user not payed' do
       before do
-        post "/auth/login", params: { email: not_payed_user.email, password: password }
+        user.is_payed = false
+        user.save
+
+        post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
 
         get "/employees", headers: { 'Authorization': token }
+      end
+
+      it "return nothing" do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when not authorized' do
+      before do
+        get "/employees"
       end
 
       it "return nothing" do
@@ -178,6 +192,26 @@ RSpec.describe 'Employee API', type: :request do
       end
     end
 
+    context 'when user not payed' do
+      before do
+        user.is_payed = false
+        user.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees/#{employee_id}", headers: { 'Authorization': token }
+      end
+
+      it 'returns empty message' do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
     context 'when the record does not exist' do
       let(:employee_id) { 0 }
 
@@ -190,6 +224,22 @@ RSpec.describe 'Employee API', type: :request do
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when not authorized' do
+      let(:employee_id) { 0 }
+
+      before do
+        get "/employees/#{employee_id}"
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
       end
 
       it 'returns a not found message' do

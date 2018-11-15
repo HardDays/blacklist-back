@@ -72,7 +72,21 @@ RSpec.describe "BanLists API", type: :request do
         post "/auth/login", params: { email: not_payed_user.email, password: password}
         token = json['token']
 
-        get "/black_list", params: { offset: 3 }, headers: { 'Authorization': token}
+        get "/black_list", headers: { 'Authorization': token}
+      end
+
+      it "returns nothing" do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when not authorized' do
+      before do
+        get "/black_list"
       end
 
       it "returns nothing" do
