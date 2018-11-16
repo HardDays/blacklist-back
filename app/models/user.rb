@@ -43,8 +43,10 @@ class User < ApplicationRecord
 
     if employee
       res[:user_type] = 'employee'
+      res[:name] = employee.first_name
     elsif company
       res[:user_type] = 'company'
+      res[:name] = company.name
     end
 
     res
