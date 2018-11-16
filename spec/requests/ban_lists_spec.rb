@@ -6,9 +6,9 @@ RSpec.describe "BanLists API", type: :request do
   let(:not_payed_user)  { create(:user, password: password) }
   let!(:ban_list)  { create_list(:ban_list, 10) }
 
-  let(:valid_params) { { name: "Name", description: "Description", addresses: "Addresses" } }
-  let(:without_name) { { description: "Description", addresses: "Addresses" } }
-  let(:without_description) { { name: "Name", addresses: "Addresses" } }
+  let(:valid_params) { { item_type: "employee", name: "Name", description: "Description", addresses: "Addresses" } }
+  let(:without_name) { { item_type: "employee", description: "Description", addresses: "Addresses" } }
+  let(:without_description) { { item_type: "employee", name: "Name", addresses: "Addresses" } }
 
   # Test suite for GET /ban_list
   describe 'GET /ban_list' do

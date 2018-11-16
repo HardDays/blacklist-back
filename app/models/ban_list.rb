@@ -3,4 +3,5 @@ class BanList < ApplicationRecord
   validates_presence_of :description
 
   enum status: [:added, :approved, :denied]
+  enum item_type: [:employee, :company]
 end

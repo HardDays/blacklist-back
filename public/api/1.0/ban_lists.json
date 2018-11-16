@@ -45,6 +45,20 @@
           "parameters": [
             {
               "paramType": "form",
+              "name": "item_type",
+              "type": "string",
+              "description": "Type of item",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "employee",
+                  "company"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
               "name": "name",
               "type": "string",
               "description": "Name",

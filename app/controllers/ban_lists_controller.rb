@@ -18,6 +18,7 @@ class BanListsController < ApplicationController
   # POST /ban_lists
   swagger_api :create do
     summary "Create new note in ban list"
+    param_list :form, :item_type, :string, :required, "Type of item", [:employee, :company]
     param :form, :name, :string, :required, "Name"
     param :form, :description, :string, :required, "Description/Position"
     param :form, :addresses, :string, :optional, "Work addresses/Addresses"
@@ -47,6 +48,6 @@ class BanListsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def ban_list_params
-      params.permit(:name, :description, :addresses, :text)
+      params.permit(:item_type, :name, :description, :addresses, :text)
     end
 end
