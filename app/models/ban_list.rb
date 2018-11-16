@@ -6,4 +6,6 @@ class BanList < ApplicationRecord
 
   enum status: [:added, :approved, :denied]
   enum item_type: [:employee, :company]
+
+  has_many :ban_list_comments, dependent: :destroy
 end

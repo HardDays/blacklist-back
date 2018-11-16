@@ -227,12 +227,33 @@ RSpec.describe 'Employee API', type: :request do
       end
     end
 
-    context 'when user not payed' do
+    context 'when my record not approved' do
       before do
-        user.is_payed = false
-        user.save
+        employee.status = "added"
+        employee.save
 
         post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees/#{employee_id}", headers: { 'Authorization': token }
+      end
+
+      it 'i still have access' do
+        expect(json).not_to be_empty
+        expect(json['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when user not payed' do
+      before do
+        user2.is_payed = false
+        user2.save
+
+        post "/auth/login", params: { email: user2.email, password: password }
         token = json['token']
 
         get "/employees/#{employee_id}", headers: { 'Authorization': token }
@@ -244,6 +265,27 @@ RSpec.describe 'Employee API', type: :request do
 
       it 'returns status code 403' do
         expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when i did not payed' do
+      before do
+        user.is_payed = false
+        user.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees/#{employee_id}", headers: { 'Authorization': token }
+      end
+
+      it 'i still have access' do
+        expect(json).not_to be_empty
+        expect(json['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
       end
     end
 

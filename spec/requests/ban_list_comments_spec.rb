@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "BanLists API", type: :request do
+RSpec.describe "BanListComments API", type: :request do
   let(:password) { "123123" }
   let(:user)  { create(:user, password: password, is_payed: true) }
   let!(:item) { create(:ban_list, status: "approved") }
@@ -189,7 +189,7 @@ RSpec.describe "BanLists API", type: :request do
 
     context 'when not authorized' do
       before do
-        get "/black_list/#{item_id}"
+        get "/employees/#{item_id}"
       end
 
       it 'returns status code 403' do

@@ -1,7 +1,7 @@
 class EmployeesController < ApplicationController
-  before_action :auth_payed_user, only: [:index, :show]
+  before_action :auth_payed_user, only: [:index]
   before_action :auth_and_set_employee, only: [:create, :update]
-  before_action :set_employee, only: [:show]
+  before_action :auth_user_and_set_employee, only: [:show]
   swagger_controller :employee, "Employees"
 
   # GET /employees
@@ -98,13 +98,25 @@ class EmployeesController < ApplicationController
   end
 
   protected
-  def set_employee
+  def auth_user_and_set_employee
     begin
-      user = User.find(params[:id])
-      @employee = user.employee
+      @user = AuthorizationHelper.auth_user_without_id(request)
 
-      unless @employee.status == "approved"
-        render status: :not_found
+      if @user == nil
+        render status: :forbidden and return
+      elsif @user.id == params[:id].to_i
+        @employee = @user.employee
+      else
+        unless @user.is_payed
+          render status: :forbidden and return
+        end
+
+        user = User.find(params[:id])
+        @employee = user.employee
+
+        if @employee.status != "approved"
+          render status: :not_found
+        end
       end
     rescue
       render status: :not_found

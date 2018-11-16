@@ -39,6 +39,7 @@ class BanListsController < ApplicationController
     param :form, :description, :string, :required, "Description/Position"
     param :form, :addresses, :string, :optional, "Work addresses/Addresses"
     param :form, :text, :string, :optional, "Additional text"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :forbidden
   end

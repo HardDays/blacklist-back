@@ -8,6 +8,10 @@
       "description": "Black list"
     },
     {
+      "path": "/api/1.0/ban_list_comments.{format}",
+      "description": "Black list comments"
+    },
+    {
       "path": "/api/1.0/users.{format}",
       "description": "Users"
     },

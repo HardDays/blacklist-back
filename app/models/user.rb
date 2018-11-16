@@ -11,6 +11,7 @@ class User < ApplicationRecord
   belongs_to :image, dependent: :destroy, optional: true
   has_many :tokens, dependent: :destroy
   has_many :forgot_password_attempts, dependent: :destroy
+  has_many :ban_list_comments, dependent: :destroy
 
   SALT = 'elite_salt'
 

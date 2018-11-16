@@ -2,14 +2,21 @@
   "apiVersion": "1.0",
   "swaggerVersion": "1.2",
   "basePath": "https://blacklist-back.herokuapp.com",
-  "resourcePath": "ban_lists",
+  "resourcePath": "ban_list_comments",
   "apis": [
     {
-      "path": "/black_list.json",
+      "path": "/black_list/{black_list_id}/black_list_comments.json",
       "operations": [
         {
-          "summary": "Retrieve ban list",
+          "summary": "Retrieve ban list comments",
           "parameters": [
+            {
+              "paramType": "path",
+              "name": "black_list_id",
+              "type": "integer",
+              "description": "Black list id",
+              "required": true
+            },
             {
               "paramType": "query",
               "name": "limit",
@@ -39,58 +46,44 @@
               "message": "Ok"
             }
           ],
-          "nickname": "BanLists#index",
+          "nickname": "BanListComments#index",
           "method": "get"
         }
       ]
     },
     {
-      "path": "/black_list.json",
+      "path": "/black_list/{black_list_id}/black_list_comments.json",
       "operations": [
         {
-          "summary": "Create new note in ban list",
+          "summary": "Create new comment",
           "parameters": [
             {
+              "paramType": "path",
+              "name": "black_list_id",
+              "type": "integer",
+              "description": "Black list id",
+              "required": true
+            },
+            {
               "paramType": "form",
-              "name": "item_type",
+              "name": "comment_type",
               "type": "string",
-              "description": "Type of item",
+              "description": "Type of comment",
               "required": true,
               "allowableValues": {
                 "valueType": "LIST",
                 "values": [
-                  "employee",
-                  "company"
+                  "like",
+                  "dislike"
                 ]
               }
             },
             {
               "paramType": "form",
-              "name": "name",
-              "type": "string",
-              "description": "Name",
-              "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "description",
-              "type": "string",
-              "description": "Description/Position",
-              "required": true
-            },
-            {
-              "paramType": "form",
-              "name": "addresses",
-              "type": "string",
-              "description": "Work addresses/Addresses",
-              "required": false
-            },
-            {
-              "paramType": "form",
               "name": "text",
               "type": "string",
-              "description": "Additional text",
-              "required": false
+              "description": "Text",
+              "required": true
             },
             {
               "paramType": "header",
@@ -112,41 +105,8 @@
               "message": "Forbidden"
             }
           ],
-          "nickname": "BanLists#create",
+          "nickname": "BanListComments#create",
           "method": "post"
-        }
-      ]
-    },
-    {
-      "path": "/black_list/{id}.json",
-      "operations": [
-        {
-          "summary": "Retrieve ban list item",
-          "parameters": [
-            {
-              "paramType": "path",
-              "name": "id",
-              "type": "integer",
-              "description": "Item id",
-              "required": true
-            },
-            {
-              "paramType": "header",
-              "name": "Authorization",
-              "type": "string",
-              "description": "Authentication token",
-              "required": true
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 200,
-              "responseModel": null,
-              "message": "Ok"
-            }
-          ],
-          "nickname": "BanLists#show",
-          "method": "get"
         }
       ]
     }
