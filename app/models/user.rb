@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :tokens, dependent: :destroy
   has_many :forgot_password_attempts, dependent: :destroy
   has_many :ban_list_comments, dependent: :destroy
+  has_many :employee_comments, dependent: :destroy
 
   SALT = 'elite_salt'
 

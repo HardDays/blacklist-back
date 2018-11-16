@@ -1,12 +1,12 @@
-class BanListCommentsController < ApplicationController
+class EmployeeCommentsController < ApplicationController
   before_action :auth_payed_user, only: [:index, :create]
-  before_action :set_ban_list, only: [:index, :create]
-  swagger_controller :ban_list_comments, "Black list comments"
+  before_action :set_employee, only: [:index, :create]
+  swagger_controller :employee_comments, "Employee comments"
 
-  # GET /ban_lists_comments
+  # GET /employee_comments
   swagger_api :index do
-    summary "Retrieve ban list comments"
-    param :path, :black_list_id, :integer, :required, "Black list id"
+    summary "Retrieve employee comments"
+    param :path, :employee_id, :integer, :required, "Employee id"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     param :header, 'Authorization', :string, :required, 'Authentication token'
@@ -15,18 +15,18 @@ class BanListCommentsController < ApplicationController
     response :forbidden
   end
   def index
-    @comments = @ban_list.ban_list_comments.all
+    @comments = @user.employee_comments.all
 
     render json: {
-      count: BanListComment.count,
+      count: EmployeeComment.count,
       items: @comments.limit(params[:limit]).offset(params[:offset])
     }, status: :ok
   end
 
-  # POST /ban_lists_comments
+  # POST /employee_comments
   swagger_api :create do
     summary "Create new comment"
-    param :path, :black_list_id, :integer, :required, "Black list id"
+    param :path, :employee_id, :integer, :required, "Black list id"
     param_list :form, :comment_type, :string, :required, "Type of comment", [:like, :dislike]
     param :form, :text, :string, :required, "Text"
     param :header, 'Authorization', :string, :required, 'Authentication token'
@@ -34,9 +34,8 @@ class BanListCommentsController < ApplicationController
     response :forbidden
   end
   def create
-    @comment = BanListComment.new(ban_list_comment_params)
+    @comment = EmployeeComment.new(employee_comments_params)
     @comment.user_id = @user.id
-    @comment.ban_list_id = @ban_list.id
 
     if @comment.save
       render json: @comment, status: :ok
@@ -46,11 +45,12 @@ class BanListCommentsController < ApplicationController
   end
 
   private
-  def set_ban_list
+  def set_employee
     begin
-      @ban_list = BanList.find(params[:black_list_id])
+      @user = User.find(params[:employee_id])
+      employee = @user.employee
 
-      unless @ban_list.status == "approved"
+      unless employee&.status == "approved"
         render status: :not_found
       end
     rescue
@@ -67,8 +67,8 @@ class BanListCommentsController < ApplicationController
     end
   end
 
-    # Only allow a trusted parameter "white list" through.
-    def ban_list_comment_params
-      params.permit(:comment_type, :text)
-    end
+  # Only allow a trusted parameter "white list" through.
+  def employee_comments_params
+    params.permit(:comment_type, :text)
+  end
 end

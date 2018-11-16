@@ -1,0 +1,111 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "https://blacklist-back.herokuapp.com",
+  "resourcePath": "employee_comments",
+  "apis": [
+    {
+      "path": "/employee_comments.json",
+      "operations": [
+        {
+          "summary": "Retrieve employee comments",
+          "parameters": [
+            {
+              "paramType": "query",
+              "name": "limit",
+              "type": "integer",
+              "description": "Limit",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "offset",
+              "type": "integer",
+              "description": "Offset",
+              "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "EmployeeComments#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/employee_comments.json",
+      "operations": [
+        {
+          "summary": "Create new comment",
+          "parameters": [
+            {
+              "paramType": "form",
+              "name": "comment_type",
+              "type": "string",
+              "description": "Type of comment",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "like",
+                  "dislike"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "text",
+              "type": "string",
+              "description": "Text",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            }
+          ],
+          "nickname": "EmployeeComments#create",
+          "method": "post"
+        }
+      ]
+    }
+  ],
+  "authorizations": null
+}

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :employee_comments
   resources :ban_lists, path: 'black_list', only: [:index, :show, :create]
   get 'black_list/:black_list_id/black_list_comments', to: 'ban_list_comments#index'
   post 'black_list/:black_list_id/black_list_comments', to: 'ban_list_comments#create'
@@ -34,6 +35,7 @@ Rails.application.routes.draw do
   resources :employees, only: [:index, :show, :create, :update] do
     resources :jobs, only: [:create, :update]
     resources :employee_offers, only: [:index, :show, :create]
+    resources :employee_comments, only: [:index, :create]
   end
 
   resources :vacancies, only: [:index, :show] do
