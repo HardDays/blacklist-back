@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe BanListComment, type: :model do
   it { should validate_presence_of(:text)}
+  it { should validate_presence_of(:comment_type)}
 
   it { should belong_to(:user)}
   it "should be deleted when delete user" do

@@ -44,6 +44,16 @@
               "code": 200,
               "responseModel": null,
               "message": "Ok"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
             }
           ],
           "nickname": "BanListComments#index",

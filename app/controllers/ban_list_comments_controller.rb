@@ -11,6 +11,8 @@ class BanListCommentsController < ApplicationController
     param :query, :offset, :integer, :optional, "Offset"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
+    response :not_found
+    response :forbidden
   end
   def index
     @comments = @ban_list.ban_list_comments.all
@@ -46,7 +48,7 @@ class BanListCommentsController < ApplicationController
   private
   def set_ban_list
     begin
-      @ban_list = BanList.find(params[:id])
+      @ban_list = BanList.find(params[:black_list_id])
 
       unless @ban_list.status == "approved"
         render status: :not_found
