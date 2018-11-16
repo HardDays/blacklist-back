@@ -29,7 +29,8 @@ RSpec.describe 'Admin employees API', type: :request do
 
       it "return all employees" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(3)
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
       end
 
       it 'returns status code 200' do
@@ -98,7 +99,8 @@ RSpec.describe 'Admin employees API', type: :request do
 
       it "returns 5 items" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(2)
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(2)
       end
 
       it 'returns status code 200' do
@@ -116,7 +118,8 @@ RSpec.describe 'Admin employees API', type: :request do
 
       it "returns items" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(2)
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(2)
       end
 
       it 'returns status code 200' do

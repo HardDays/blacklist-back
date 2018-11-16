@@ -14,7 +14,10 @@ class BanListsController < ApplicationController
   def index
     @ban_lists = BanList.approved
 
-    render json: @ban_lists.limit(params[:limit]).offset(params[:offset]), status: :ok
+    render json: {
+      count: BanList.approved.count,
+      items: @ban_lists.limit(params[:limit]).offset(params[:offset])
+    }, status: :ok
   end
 
   # GET /ban_lists/:id

@@ -16,7 +16,10 @@ class EmployeesController < ApplicationController
     @employees = Employee.approved
     search_text
 
-    render json: @employees.limit(params[:limit]).offset(params[:offset]), short: true, status: :ok
+    render json: {
+      count: Employee.approved.count,
+      items: @employees.limit(params[:limit]).offset(params[:offset])
+    }, short: true, status: :ok
   end
 
   # GET /employees/1

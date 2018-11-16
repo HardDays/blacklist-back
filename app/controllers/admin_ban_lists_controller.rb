@@ -20,7 +20,10 @@ class AdminBanListsController < ApplicationController
       @ban_list = @ban_list.where(status: BanList.statuses[params[:status]])
     end
 
-    render json: @ban_list.limit(params[:limit]).offset(params[:offset]), status: :ok
+    render json: {
+      count: BanList.count,
+      items: @ban_list.limit(params[:limit]).offset(params[:offset])
+    }, status: :ok
   end
 
   # POST /admin_ban_lists/1/approve

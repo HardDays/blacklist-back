@@ -33,7 +33,8 @@ RSpec.describe "EmployeeOffers", type: :request do
 
       it "return all employee offers" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(2)
+        expect(json['count']).to eq(2)
+        expect(json['items'].size).to eq(2)
       end
 
       it 'returns status code 200' do
@@ -51,7 +52,8 @@ RSpec.describe "EmployeeOffers", type: :request do
 
       it "returns 1 employee offer" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(1)
+        expect(json['count']).to eq(2)
+        expect(json['items'].size).to eq(1)
       end
 
       it 'returns status code 200' do
@@ -69,8 +71,9 @@ RSpec.describe "EmployeeOffers", type: :request do
 
       it "returns employee offer" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(1)
-        expect(json[0]['id']).to eq(employee_offer2.id)
+        expect(json['count']).to eq(2)
+        expect(json['items'].size).to eq(1)
+        expect(json['items'][0]['id']).to eq(employee_offer2.id)
       end
 
       it 'returns status code 200' do

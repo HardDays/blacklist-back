@@ -18,7 +18,10 @@ class VacanciesController < ApplicationController
     @vacancies = Vacancy.all
     search_text
 
-    render json: @vacancies.limit(params[:limit]).offset(params[:offset]), short: true, status: :ok
+    render json: {
+      count: Vacancy.count,
+      items: @vacancies.limit(params[:limit]).offset(params[:offset])
+    }, short: true, status: :ok
   end
 
   # GET /vacancies/1

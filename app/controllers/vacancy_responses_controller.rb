@@ -19,7 +19,10 @@ class VacancyResponsesController < ApplicationController
   def index
     @vacancy_responses = @vacancy.vacancy_responses.all
 
-    render json: @vacancy_responses.limit(params[:limit]).offset(params[:offset]), status: :ok
+    render json: {
+      count: @vacancy.vacancy_responses.count,
+      items: @vacancy_responses.limit(params[:limit]).offset(params[:offset])
+    }, status: :ok
   end
 
   # POST /vacancy_responses

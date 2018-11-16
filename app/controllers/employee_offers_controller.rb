@@ -17,9 +17,12 @@ class EmployeeOffersController < ApplicationController
     response :forbidden
   end
   def index
-    @employee_offers = EmployeeOffer.all
+    @employee_offers = @employee.employee_offers.all
 
-    render json: @employee_offers.limit(params[:limit]).offset(params[:offset]), status: :ok
+    render json: {
+      count: @employee.employee_offers.count,
+      items: @employee_offers.limit(params[:limit]).offset(params[:offset])
+    }, status: :ok
   end
 
   # GET /employees/1/employee_offers/1

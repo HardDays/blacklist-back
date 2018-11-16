@@ -24,7 +24,8 @@ RSpec.describe 'Admin ban list API', type: :request do
 
       it "return all in black list" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(10)
+        expect(json['count']).to eq(10)
+        expect(json['items'].size).to eq(10)
       end
 
       it 'returns status code 200' do
@@ -93,7 +94,8 @@ RSpec.describe 'Admin ban list API', type: :request do
 
       it "returns 5 items" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(5)
+        expect(json['count']).to eq(10)
+        expect(json['items'].size).to eq(5)
       end
 
       it 'returns status code 200' do
@@ -111,7 +113,8 @@ RSpec.describe 'Admin ban list API', type: :request do
 
       it "returns items" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(8)
+        expect(json['count']).to eq(10)
+        expect(json['items'].size).to eq(8)
       end
 
       it 'returns status code 200' do

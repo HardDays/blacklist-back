@@ -27,8 +27,9 @@ RSpec.describe "BanLists API", type: :request do
 
       it "return only approved" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(3)
-        expect(json[0]['id']).to eq(item_id)
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
+        expect(json['items'][0]['id']).to eq(item_id)
       end
 
       it 'returns status code 200' do
@@ -46,7 +47,8 @@ RSpec.describe "BanLists API", type: :request do
 
       it "returns 2 entities" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(2)
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(2)
       end
 
       it 'returns status code 200' do
@@ -64,8 +66,9 @@ RSpec.describe "BanLists API", type: :request do
 
       it "returns response" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(1)
-        expect(json[0]['id']).to eq(item3.id)
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(1)
+        expect(json['items'][0]['id']).to eq(item3.id)
       end
 
       it 'returns status code 200' do

@@ -15,7 +15,10 @@ class AdminUsersController < ApplicationController
   def index
     @users = User.all
 
-    render json: @users.limit(params[:limit]).offset(params[:offset]), status: :ok
+    render json: {
+      count: User.count,
+      items: @users.limit(params[:limit]).offset(params[:offset])
+    }, status: :ok
   end
 
   # POST /admin_ban_lists/1/block

@@ -20,7 +20,10 @@ class AdminEmployeesController < ApplicationController
       @employees = @employees.where(status: Employee.statuses[params[:status]])
     end
 
-    render json: @employees.limit(params[:limit]).offset(params[:offset]), short: true, status: :ok
+    render json: {
+      count: Employee.count,
+      items: @employees.limit(params[:limit]).offset(params[:offset])
+    }, short: true, status: :ok
   end
 
   # POST /admin_ban_lists/1/approve
