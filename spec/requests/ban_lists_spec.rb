@@ -3,10 +3,15 @@ require 'rails_helper'
 RSpec.describe "BanLists API", type: :request do
   let(:password) { "123123" }
   let(:user)  { create(:user, password: password, is_payed: true) }
-  let(:not_payed_user)  { create(:user, password: password) }
-  let!(:ban_list)  { create_list(:ban_list, 10) }
+  let!(:item) { create(:ban_list, status: "approved") }
+  let!(:item2) { create(:ban_list, status: "approved") }
+  let!(:item3) { create(:ban_list, status: "approved") }
+  let!(:item4) { create(:ban_list, status: "denied") }
+  let!(:item5) { create(:ban_list, status: "added") }
+  let(:item_id) { item.id }
 
-  let(:valid_params) { { item_type: "employee", name: "Name", description: "Description", addresses: "Addresses" } }
+  let(:employee_valid_params) { { item_type: "employee", name: "Name", description: "Description", addresses: "Addresses" } }
+  let(:company_valid_params) { { item_type: "company", name: "Name", description: "Description", addresses: "Addresses" } }
   let(:without_name) { { item_type: "employee", description: "Description", addresses: "Addresses" } }
   let(:without_description) { { item_type: "employee", name: "Name", addresses: "Addresses" } }
 
@@ -20,9 +25,10 @@ RSpec.describe "BanLists API", type: :request do
         get "/black_list", headers: { 'Authorization': token}
       end
 
-      it "return all ban list" do
+      it "return only approved" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(10)
+        expect(json.size).to eq(3)
+        expect(json[0]['id']).to eq(item_id)
       end
 
       it 'returns status code 200' do
@@ -35,12 +41,12 @@ RSpec.describe "BanLists API", type: :request do
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']
 
-        get "/black_list", params: { limit: 5 }, headers: { 'Authorization': token}
+        get "/black_list", params: { limit: 2 }, headers: { 'Authorization': token}
       end
 
-      it "returns 5 entities" do
+      it "returns 2 entities" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(5)
+        expect(json.size).to eq(2)
       end
 
       it 'returns status code 200' do
@@ -53,13 +59,13 @@ RSpec.describe "BanLists API", type: :request do
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']
 
-        get "/black_list", params: { offset: 3 }, headers: { 'Authorization': token}
+        get "/black_list", params: { offset: 2 }, headers: { 'Authorization': token}
       end
 
       it "returns response" do
         expect(json).not_to be_empty
-        expect(json.size).to eq(7)
-        expect(json[0]['id']).to eq(ban_list[3].id)
+        expect(json.size).to eq(1)
+        expect(json[0]['id']).to eq(item3.id)
       end
 
       it 'returns status code 200' do
@@ -69,7 +75,10 @@ RSpec.describe "BanLists API", type: :request do
 
     context 'when user not payed' do
       before do
-        post "/auth/login", params: { email: not_payed_user.email, password: password}
+        user.is_payed = false
+        user.save
+
+        post "/auth/login", params: { email: user.email, password: password}
         token = json['token']
 
         get "/black_list", headers: { 'Authorization': token}
@@ -99,14 +108,124 @@ RSpec.describe "BanLists API", type: :request do
     end
   end
 
+  # Test suite for GET /black_list/:id
+  describe 'GET /black_list/:id' do
+    context 'when the record exists' do
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/black_list/#{item_id}", headers: { 'Authorization': token }
+      end
+
+      it 'returns the item' do
+        expect(json).not_to be_empty
+        expect(json['id']).to eq(item_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when user not payed' do
+      before do
+        user.is_payed = false
+        user.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/black_list/#{item_id}", headers: { 'Authorization': token }
+      end
+
+      it 'returns empty message' do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when the record does not exist' do
+      let(:item_id) { 0 }
+
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/black_list/#{item_id}", headers: { 'Authorization': token }
+      end
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when the record not approved' do
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/black_list/#{item4.id}", headers: { 'Authorization': token }
+      end
+
+      it 'returns status code 404' do
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when not authorized' do
+      before do
+        get "/employees/#{item_id}"
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'returns a not found message' do
+        expect(response.body).to match("")
+      end
+    end
+  end
+
   # Test suite for POST /black_list
   describe 'POST /black_list' do
-    context 'when the request is valid' do
+    context 'when valid employee request' do
       before do
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']
 
-        post "/black_list", params: valid_params, headers: { 'Authorization': token }
+        post "/black_list", params: employee_valid_params, headers: { 'Authorization': token }
+      end
+
+      it 'creates a response' do
+        expect(json['name']).to eq('Name')
+        expect(json['description']).to eq('Description')
+        expect(json['addresses']).to eq('Addresses')
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when valid company params' do
+      before do
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/black_list", params: company_valid_params, headers: { 'Authorization': token }
       end
 
       it 'creates a response' do
@@ -136,10 +255,13 @@ RSpec.describe "BanLists API", type: :request do
 
     context 'when the user not payed' do
       before do
-        post "/auth/login", params: { email: not_payed_user.email, password: password}
+        user.is_payed = false
+        user.save
+
+        post "/auth/login", params: { email: user.email, password: password}
         token = json['token']
 
-        post "/black_list", params: valid_params, headers: { 'Authorization': token }
+        post "/black_list", params: employee_valid_params, headers: { 'Authorization': token }
       end
 
       it 'returns status code 403' do

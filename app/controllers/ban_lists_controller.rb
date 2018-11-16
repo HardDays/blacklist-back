@@ -1,5 +1,6 @@
 class BanListsController < ApplicationController
-  before_action :auth_payed_user, only: [:index, :create]
+  before_action :auth_payed_user, only: [:index, :show, :create]
+  before_action :set_ban_list, only: [:show]
   swagger_controller :ban_list, "Black list"
 
   # GET /ban_lists
@@ -7,12 +8,24 @@ class BanListsController < ApplicationController
     summary "Retrieve ban list"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
   end
   def index
-    @ban_lists = BanList.all
+    @ban_lists = BanList.approved
 
     render json: @ban_lists.limit(params[:limit]).offset(params[:offset]), status: :ok
+  end
+
+  # GET /ban_lists/:id
+  swagger_api :show do
+    summary "Retrieve ban list item"
+    param :path, :id, :integer, :required, "Item id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :ok
+  end
+  def show
+    render json: @ban_list, status: :ok
   end
 
   # POST /ban_lists
@@ -37,6 +50,18 @@ class BanListsController < ApplicationController
   end
 
   private
+    def set_ban_list
+      begin
+        @ban_list = BanList.find(params[:id])
+
+        unless @ban_list.status == "approved"
+          render status: :not_found
+        end
+      rescue
+        render status: :not_found
+      end
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def auth_payed_user
       user = AuthorizationHelper.auth_payed_user_without_id(request)

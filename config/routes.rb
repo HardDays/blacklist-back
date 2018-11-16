@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :ban_lists, path: 'black_list', only: [:index, :create]
+  resources :ban_lists, path: 'black_list', only: [:index, :show, :create]
 
   resources :users, only: [:show, :create, :update] do
     collection do

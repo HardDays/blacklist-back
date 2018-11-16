@@ -5,9 +5,12 @@ RSpec.describe 'Admin ban list API', type: :request do
   let!(:admin_user)  { create(:user, password: password, is_admin: true) }
   let(:not_admin_user) { create(:user, password: password) }
 
-  let!(:ban_list) { create_list(:ban_list, 10) }
+  let!(:ban_list) { create_list(:ban_list, 7) }
   let(:item) { ban_list.first }
   let(:item_id) { item.id }
+  let!(:item1) { create(:ban_list, status: "approved") }
+  let!(:item2) { create(:ban_list, status: "denied") }
+  let!(:item3) { create(:ban_list, status: "added") }
 
   # Test suite for GET /admin_black_list
   describe 'GET /admin_black_list' do

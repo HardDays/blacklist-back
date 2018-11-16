@@ -1,4 +1,6 @@
 class BanList < ApplicationRecord
+  scope :approved, -> { where(status: Employee.statuses["approved"]) }
+
   validates_presence_of :name
   validates_presence_of :description
 

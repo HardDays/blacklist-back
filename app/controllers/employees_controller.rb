@@ -13,7 +13,7 @@ class EmployeesController < ApplicationController
     response :ok
   end
   def index
-    @employees = Employee.all
+    @employees = Employee.approved
     search_text
 
     render json: @employees.limit(params[:limit]).offset(params[:offset]), short: true, status: :ok
@@ -99,6 +99,10 @@ class EmployeesController < ApplicationController
     begin
       user = User.find(params[:id])
       @employee = user.employee
+
+      unless @employee.status == "approved"
+        render status: :not_found
+      end
     rescue
       render status: :not_found
     end

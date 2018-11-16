@@ -23,6 +23,13 @@
               "type": "integer",
               "description": "Offset",
               "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
             }
           ],
           "responseMessages": [
@@ -100,6 +107,39 @@
           ],
           "nickname": "BanLists#create",
           "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/black_list/{id}.json",
+      "operations": [
+        {
+          "summary": "Retrieve ban list item",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "Item id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "BanLists#show",
+          "method": "get"
         }
       ]
     }
