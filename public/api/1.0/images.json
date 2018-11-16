@@ -16,6 +16,13 @@
               "type": "integer",
               "description": "Image id",
               "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
             }
           ],
           "responseMessages": [
@@ -96,6 +103,13 @@
               "name": "id",
               "type": "integer",
               "description": "Image id",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
               "required": true
             }
           ],
