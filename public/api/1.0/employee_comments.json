@@ -5,11 +5,18 @@
   "resourcePath": "employee_comments",
   "apis": [
     {
-      "path": "/employee_comments.json",
+      "path": "/employees/{employee_id}/employee_comments.json",
       "operations": [
         {
           "summary": "Retrieve employee comments",
           "parameters": [
+            {
+              "paramType": "path",
+              "name": "employee_id",
+              "type": "integer",
+              "description": "Employee id",
+              "required": true
+            },
             {
               "paramType": "query",
               "name": "limit",
@@ -55,11 +62,18 @@
       ]
     },
     {
-      "path": "/employee_comments.json",
+      "path": "/employees/{employee_id}/employee_comments.json",
       "operations": [
         {
           "summary": "Create new comment",
           "parameters": [
+            {
+              "paramType": "path",
+              "name": "employee_id",
+              "type": "integer",
+              "description": "Black list id",
+              "required": true
+            },
             {
               "paramType": "form",
               "name": "comment_type",

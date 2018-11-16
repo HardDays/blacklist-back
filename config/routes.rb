@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :employee_comments
   resources :ban_lists, path: 'black_list', only: [:index, :show, :create]
   get 'black_list/:black_list_id/black_list_comments', to: 'ban_list_comments#index'
   post 'black_list/:black_list_id/black_list_comments', to: 'ban_list_comments#create'
@@ -32,6 +31,7 @@ Rails.application.routes.draw do
   resources :companies, only: [:show, :create, :update] do
     resources :vacancies, only: [:create, :update]
   end
+
   resources :employees, only: [:index, :show, :create, :update] do
     resources :jobs, only: [:create, :update]
     resources :employee_offers, only: [:index, :show, :create]
@@ -61,5 +61,8 @@ Rails.application.routes.draw do
       post :block
     end
   end
+
+  resources :admin_ban_list_comments, path: 'admin_black_list_comments', only: [:destroy]
+  resources :admin_employee_comments, only: [:destroy]
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

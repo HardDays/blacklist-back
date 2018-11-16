@@ -4,10 +4,6 @@
   "basePath": "https://blacklist-back.herokuapp.com",
   "apis": [
     {
-      "path": "/api/1.0/employee_comments.{format}",
-      "description": "Employee comments"
-    },
-    {
       "path": "/api/1.0/ban_lists.{format}",
       "description": "Black list"
     },
@@ -44,6 +40,10 @@
       "description": "Employee offer"
     },
     {
+      "path": "/api/1.0/employee_comments.{format}",
+      "description": "Employee comments"
+    },
+    {
       "path": "/api/1.0/employees.{format}",
       "description": "Employees"
     },
@@ -62,6 +62,14 @@
     {
       "path": "/api/1.0/admin_users.{format}",
       "description": "Admin users"
+    },
+    {
+      "path": "/api/1.0/admin_ban_list_comments.{format}",
+      "description": "Admin black list comments"
+    },
+    {
+      "path": "/api/1.0/admin_employee_comments.{format}",
+      "description": "Admin employee comments"
     }
   ],
   "authorizations": null,
