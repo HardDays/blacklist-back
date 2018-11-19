@@ -1,6 +1,10 @@
 class Vacancy < ApplicationRecord
+  scope :approved, -> { where(status: Vacancy.statuses["approved"]) }
+
   validates_presence_of :description
   validates_presence_of :position
+
+  enum status: [:added, :approved, :denied]
 
   belongs_to :company
   has_many :vacancy_responses, dependent: :destroy

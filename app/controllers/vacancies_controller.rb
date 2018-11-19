@@ -2,7 +2,8 @@ class VacanciesController < ApplicationController
   before_action :authorize_user, only: [:create, :update]
   before_action :set_company, only: [:create, :update]
   before_action :set_vacancy, only: [:update]
-  before_action :auth_user_without_id, only: [:index, :show]
+  before_action :auth_payed_user, only: [:index]
+  before_action :auth_user_and_set_vacancy, only: [:show]
   swagger_controller :vacancy, "Vacancy"
 
   # GET /vacancies
@@ -15,11 +16,11 @@ class VacanciesController < ApplicationController
     response :ok
   end
   def index
-    @vacancies = Vacancy.all
+    @vacancies = Vacancy.approved
     search_text
 
     render json: {
-      count: Vacancy.count,
+      count: Vacancy.approved.count,
       items: @vacancies.limit(params[:limit]).offset(params[:offset])
     }, short: true, status: :ok
   end
@@ -33,12 +34,7 @@ class VacanciesController < ApplicationController
     response :not_found
   end
   def show
-    begin
-      vacancy = Vacancy.find(params[:id])
-      render json: vacancy, status: :ok
-    rescue
-        render status: :not_found
-    end
+    render json: @vacancy, status: :ok
   end
 
   # POST /employees
@@ -111,14 +107,39 @@ class VacanciesController < ApplicationController
     end
   end
 
-  def auth_user_without_id
-    user = AuthorizationHelper.auth_user_without_id(request)
+  def auth_payed_user
+    @user = AuthorizationHelper.auth_payed_user_without_id(request)
 
-    unless user
+    if @user == nil
       render status: :forbidden and return
     end
   end
 
+  def auth_user_and_set_vacancy
+    @user = AuthorizationHelper.auth_user_without_id(request)
+
+    if @user == nil
+      render status: :forbidden and return
+    end
+
+    begin
+      @vacancy = Vacancy.find(params[:id])
+    rescue
+      render status: :not_found and return
+    end
+
+    if @user.id == @vacancy.company.user_id
+      return @vacancy
+    else
+      unless @user.is_payed
+        render status: :forbidden and return
+      end
+
+      if @vacancy.status != "approved"
+        render status: :not_found and return
+      end
+    end
+  end
 
   def search_text
     if params[:text]

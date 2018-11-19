@@ -10,6 +10,7 @@ class EmployeesController < ApplicationController
     param :query, :text, :string, :optional, "Text to search"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
   end
   def index
