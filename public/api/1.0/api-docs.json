@@ -60,6 +60,10 @@
       "description": "Admin employees"
     },
     {
+      "path": "/api/1.0/admin_vacancies.{format}",
+      "description": "Admin vacancies"
+    },
+    {
       "path": "/api/1.0/admin_users.{format}",
       "description": "Admin users"
     },

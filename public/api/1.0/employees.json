@@ -30,6 +30,13 @@
               "type": "integer",
               "description": "Offset",
               "required": false
+            },
+            {
+              "paramType": "header",
+              "name": "Authorization",
+              "type": "string",
+              "description": "Authentication token",
+              "required": true
             }
           ],
           "responseMessages": [

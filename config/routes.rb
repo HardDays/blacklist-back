@@ -56,6 +56,13 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :admin_vacancies, only: [:index] do
+    member do
+      post :approve
+      post :deny
+    end
+  end
+
   resources :admin_users, only: [:index] do
     member do
       post :block
