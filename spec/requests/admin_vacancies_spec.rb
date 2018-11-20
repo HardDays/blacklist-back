@@ -145,6 +145,45 @@ RSpec.describe 'Admin vacancies API', type: :request do
     end
   end
 
+
+  # Test suite for GET /admin_vacancies/:id
+  describe 'GET /admin_vacancies/:id' do
+    context 'when simply get' do
+      before do
+        post "/auth/login", params: { email: admin_user.email, password: password }
+        token = json['token']
+
+        get "/admin_vacancies/#{vacancy_id}", headers: { 'Authorization': token }
+      end
+
+      it "return vacancy" do
+        expect(json).not_to be_empty
+        expect(json['id']).to eq(vacancy_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when user not admin' do
+      before do
+        post "/auth/login", params: { email: not_admin_user.email, password: password }
+        token = json['token']
+
+        get "/admin_vacancies/#{vacancy_id}", headers: { 'Authorization': token }
+      end
+
+      it "return nothing" do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+  end
+
   # Test suite for POST /admin_vacancies/1/approve
   describe 'POST /admin_vacancies/:id/approve' do
     context 'when the record exists' do

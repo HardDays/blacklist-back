@@ -1,9 +1,9 @@
 class AdminEmployeesController < ApplicationController
   before_action :auth_admin
-  before_action :set_employee, only: [:approve, :deny]
+  before_action :set_employee, only: [:show, :approve, :deny]
   swagger_controller :admin_employees, "Admin employees"
 
-  # GET /admin_ban_lists
+  # GET /admin_employees
   swagger_api :index do
     summary "Retrieve employees"
     param_list :query, :status, :string, :optional, "Status", [:added, :approved, :denied]
@@ -26,7 +26,20 @@ class AdminEmployeesController < ApplicationController
     }, short: true, status: :ok
   end
 
-  # POST /admin_ban_lists/1/approve
+  # GET /admin_employees/1
+  swagger_api :show do
+    summary "Retrieve employee info"
+    param :path, :id, :integer, :required, "Employee id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :ok
+    response :forbidden
+    response :not_found
+  end
+  def show
+    render json: @employee, status: :ok
+  end
+
+  # POST /admin_employees/1/approve
   swagger_api :approve do
     summary "Approve employee"
     param :path, :id, :integer, :required, "Employee id"
@@ -45,7 +58,7 @@ class AdminEmployeesController < ApplicationController
     end
   end
 
-  # POST /admin_ban_lists/1/deny
+  # POST /admin_employees/1/deny
   swagger_api :deny do
     summary "Deny employees"
     param :form, :id, :integer, :required, "Employee id"

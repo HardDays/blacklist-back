@@ -49,14 +49,14 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :admin_employees, only: [:index] do
+  resources :admin_employees, only: [:index, :show] do
     member do
       post :approve
       post :deny
     end
   end
 
-  resources :admin_vacancies, only: [:index] do
+  resources :admin_vacancies, only: [:index, :show] do
     member do
       post :approve
       post :deny

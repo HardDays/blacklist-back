@@ -1,9 +1,9 @@
 class AdminVacanciesController < ApplicationController
   before_action :auth_admin
-  before_action :set_vacancy, only: [:approve, :deny]
+  before_action :set_vacancy, only: [:show, :approve, :deny]
   swagger_controller :admin_vacancies, "Admin vacancies"
 
-  # GET /admin_ban_lists
+  # GET /admin_vacancies
   swagger_api :index do
     summary "Retrieve vacancies"
     param_list :query, :status, :string, :optional, "Status", [:added, :approved, :denied]
@@ -26,7 +26,20 @@ class AdminVacanciesController < ApplicationController
     }, short: true, status: :ok
   end
 
-  # POST /admin_ban_lists/1/approve
+  # GET /admin_vacancies/1
+  swagger_api :show do
+    summary "Retrieve vacancy info"
+    param :path, :id, :integer, :required, "Vacancy id"
+    param :header, 'Authorization', :string, :required, 'Authentication token'
+    response :ok
+    response :forbidden
+    response :not_found
+  end
+  def show
+    render json: @vacancy, status: :ok
+  end
+
+  # POST /admin_vacancies/1/approve
   swagger_api :approve do
     summary "Approve vacancy"
     param :path, :id, :integer, :required, "Vacancy id"
@@ -45,7 +58,7 @@ class AdminVacanciesController < ApplicationController
     end
   end
 
-  # POST /admin_ban_lists/1/deny
+  # POST /admin_vacancies/1/deny
   swagger_api :deny do
     summary "Deny vacancies"
     param :form, :id, :integer, :required, "Vacancy id"
