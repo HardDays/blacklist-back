@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :payments
   resources :ban_lists, path: 'black_list', only: [:index, :show, :create]
   get 'black_list/:black_list_id/black_list_comments', to: 'ban_list_comments#index'
   post 'black_list/:black_list_id/black_list_comments', to: 'ban_list_comments#create'

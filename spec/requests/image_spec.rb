@@ -14,10 +14,7 @@ RSpec.describe 'Image API', type: :request do
   describe 'GET /images/:id' do
     context 'when the record exists' do
       before do
-        post "/auth/login", params: { email: user.email, password: password }
-        token = json['token']
-
-        get "/images/#{image_id}" , headers: { 'Authorization': token }
+        get "/images/#{image_id}"
       end
 
       it 'returns status code 200' do
@@ -29,28 +26,11 @@ RSpec.describe 'Image API', type: :request do
       let(:image_id) { 0 }
 
       before do
-        post "/auth/login", params: { email: user.email, password: password }
-        token = json['token']
-
-        get "/images/#{image_id}", headers: { 'Authorization': token }
+        get "/images/#{image_id}"
       end
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
-      end
-
-      it 'returns a not found message' do
-        expect(response.body).to match("")
-      end
-    end
-
-    context 'when not authorized' do
-      before do
-        get "/images/#{image_id}"
-      end
-
-      it 'returns status code 403' do
-        expect(response).to have_http_status(403)
       end
 
       it 'returns a not found message' do
@@ -63,10 +43,7 @@ RSpec.describe 'Image API', type: :request do
   describe 'GET /images/:id/get_with_size' do
     context 'when the record exists' do
       before do
-        post "/auth/login", params: { email: user.email, password: password }
-        token = json['token']
-
-        get "/images/#{image_id}/get_with_size", headers: { 'Authorization': token }
+        get "/images/#{image_id}/get_with_size"
       end
 
       it 'response not empty' do
@@ -82,28 +59,11 @@ RSpec.describe 'Image API', type: :request do
       let(:image_id) { 0 }
 
       before do
-        post "/auth/login", params: { email: user.email, password: password }
-        token = json['token']
-
-        get "/images/#{image_id}/get_with_size", headers: { 'Authorization': token }
+        get "/images/#{image_id}/get_with_size"
       end
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
-      end
-
-      it 'returns a not found message' do
-        expect(response.body).to match("")
-      end
-    end
-
-    context 'when not authorized' do
-      before do
-        get "/images/#{image_id}/get_with_size"
-      end
-
-      it 'returns status code 403' do
-        expect(response).to have_http_status(403)
       end
 
       it 'returns a not found message' do
