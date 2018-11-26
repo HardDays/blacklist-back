@@ -13,7 +13,7 @@ class PaymentsController < ApplicationController
   end
   def create
     ActiveRecord::Base.transaction do
-      subscription = Subscription.new(user_id: @user)
+      subscription = Subscription.new(user_id: @user.id)
 
       if subscription.save
         payment = Payment.new(subscription_id: subscription.id, price: ENV['SUBSCRIPTION_PRICE'])
