@@ -79,6 +79,28 @@ RSpec.describe 'Employee API', type: :request do
       end
     end
 
+    context 'when search first_name unpayed' do
+      before do
+        user.is_payed = false
+        user.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { text: employee.first_name}, headers: { 'Authorization': token }
+      end
+
+      it "return all approved employees" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context 'when search second_name' do
       before do
         post "/auth/login", params: { email: user.email, password: password }
@@ -97,6 +119,28 @@ RSpec.describe 'Employee API', type: :request do
       end
     end
 
+    context 'when search second_name unpayed' do
+      before do
+        user.is_payed = false
+        user.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { text: employee.second_name }, headers: { 'Authorization': token }
+      end
+
+      it "return all approved employees" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context 'when search last_name' do
       before do
         post "/auth/login", params: { email: user.email, password: password }
@@ -108,6 +152,108 @@ RSpec.describe 'Employee API', type: :request do
       it "returns employee" do
         expect(json['count']).to eq(3)
         expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search last_name unpayed' do
+      before do
+        user.is_payed = false
+        user.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { text: employee.last_name}, headers: { 'Authorization': token }
+      end
+
+      it "return all approved employees" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search position' do
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { position: employee.position}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search position unpayed' do
+      before do
+        user.is_payed = false
+        user.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { position: employee.position}, headers: { 'Authorization': token }
+      end
+
+      it "return all approved employees" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search experience' do
+      before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { experience: employee.experience}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search experience unpayed' do
+      before do
+        user.is_payed = false
+        user.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { experience: employee.experience}, headers: { 'Authorization': token }
+      end
+
+      it "return all approved employees" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
       end
 
       it 'returns status code 200' do
@@ -165,12 +311,14 @@ RSpec.describe 'Employee API', type: :request do
         get "/employees", headers: { 'Authorization': token }
       end
 
-      it "return nothing" do
-        expect(response.body).to match("")
+      it "return all approved employees" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
       end
 
-      it 'returns status code 403' do
-        expect(response).to have_http_status(403)
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
       end
     end
 

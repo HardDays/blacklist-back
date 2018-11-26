@@ -66,6 +66,28 @@ RSpec.describe 'Vacancies API', type: :request do
       end
     end
 
+    context 'when unpayed search position' do
+      before do
+        user.is_payed = false
+        user.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/vacancies", params: { text: vacancy.position}, headers: { 'Authorization': token }
+      end
+
+      it "return all vacancies" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context 'when use limit' do
       before do
         post "/auth/login", params: { email: user.email, password: password }
@@ -105,7 +127,7 @@ RSpec.describe 'Vacancies API', type: :request do
       end
     end
 
-    context 'when user not payed' do
+    context 'when user not payed and request without searching' do
       before do
         user.is_payed = false
         user.save
@@ -116,12 +138,14 @@ RSpec.describe 'Vacancies API', type: :request do
         get "/vacancies", headers: { 'Authorization': token }
       end
 
-      it "return nothing" do
-        expect(response.body).to match("")
+      it "return all vacancies" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
       end
 
-      it 'returns status code 403' do
-        expect(response).to have_http_status(403)
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
       end
     end
 

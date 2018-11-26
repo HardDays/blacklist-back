@@ -17,7 +17,10 @@ class VacanciesController < ApplicationController
   end
   def index
     @vacancies = Vacancy.approved
-    search_text
+
+    if @is_filters_available
+      search_text
+    end
 
     render json: {
       count: Vacancy.approved.count,
@@ -108,10 +111,19 @@ class VacanciesController < ApplicationController
   end
 
   def auth_payed_user
+    @is_filters_available = false
     @user = AuthorizationHelper.auth_payed_user_without_id(request)
 
     if @user == nil
-      render status: :forbidden and return
+      user = AuthorizationHelper.auth_user_without_id(request)
+
+      if user == nil
+        render status: :forbidden and return
+      else
+        @user = user
+      end
+    else
+      @is_filters_available = true
     end
   end
 
