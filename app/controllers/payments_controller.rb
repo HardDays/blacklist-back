@@ -12,7 +12,7 @@ class PaymentsController < ApplicationController
     response :unprocessable_entity
   end
   def create
-    ActiveRecord.Base::transaction do
+    ActiveRecord::Base.transaction do
       subscription = Subscription.new(user_id: @user)
 
       if subscription.save
