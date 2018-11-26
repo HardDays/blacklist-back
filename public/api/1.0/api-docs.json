@@ -4,10 +4,6 @@
   "basePath": "https://blacklist-back.herokuapp.com",
   "apis": [
     {
-      "path": "/api/1.0/payments.{format}",
-      "description": "Payments"
-    },
-    {
       "path": "/api/1.0/ban_lists.{format}",
       "description": "Black list"
     },
@@ -54,6 +50,10 @@
     {
       "path": "/api/1.0/vacancy_responses.{format}",
       "description": "Vacancy responses"
+    },
+    {
+      "path": "/api/1.0/payments.{format}",
+      "description": "Payments"
     },
     {
       "path": "/api/1.0/admin_ban_lists.{format}",
