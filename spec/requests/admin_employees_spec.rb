@@ -89,6 +89,96 @@ RSpec.describe 'Admin employees API', type: :request do
       end
     end
 
+    context 'when search first_name' do
+      before do
+        post "/auth/login", params: { email: admin_user.email, password: password }
+        token = json['token']
+
+        get "/admin_employees", params: { text: employee.first_name}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search second_name' do
+      before do
+        post "/auth/login", params: { email: admin_user.email, password: password }
+        token = json['token']
+
+        get "/admin_employees", params: { text: employee.second_name }, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search last_name' do
+      before do
+        post "/auth/login", params: { email: admin_user.email, password: password }
+        token = json['token']
+
+        get "/admin_employees", params: { text: employee.last_name}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search position' do
+      before do
+        post "/auth/login", params: { email: admin_user.email, password: password }
+        token = json['token']
+
+        get "/admin_employees", params: { position: employee.position}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search experience' do
+      before do
+        post "/auth/login", params: { email: admin_user.email, password: password }
+        token = json['token']
+
+        get "/admin_employees", params: { experience: employee.experience}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context 'when use limit' do
       before do
         post "/auth/login", params: { email: admin_user.email, password: password }

@@ -7,6 +7,9 @@ class AdminEmployeesController < ApplicationController
   swagger_api :index do
     summary "Retrieve employees"
     param_list :query, :status, :string, :optional, "Status", [:added, :approved, :denied]
+    param :query, :text, :string, :optional, "Text to search"
+    param :query, :position, :string, :optional, "Position text to search"
+    param :query, :experience, :integer, :optional, "Experience to search"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     param :header, 'Authorization', :string, :required, 'Authentication token'
@@ -19,6 +22,9 @@ class AdminEmployeesController < ApplicationController
     if params[:status]
       @employees = @employees.where(status: Employee.statuses[params[:status]])
     end
+    search_text
+    search_position
+    search_experience
 
     render json: {
       count: Employee.count,
@@ -97,6 +103,25 @@ class AdminEmployeesController < ApplicationController
 
     unless user
       render status: :forbidden and return
+    end
+  end
+
+  def search_text
+    if params[:text]
+      @employees = @employees.where("(first_name ILIKE :query OR second_name ILIKE :query OR last_name ILIKE :query)",
+                                    query: "%#{params[:text]}%")
+    end
+  end
+
+  def search_position
+    if params[:position]
+      @employees = @employees.where("(position ILIKE :query)", query: "%#{params[:position]}%")
+    end
+  end
+
+  def search_experience
+    if params[:experience]
+      @employees = @employees.where("(experience >= :query)", query: params[:experience])
     end
   end
 end

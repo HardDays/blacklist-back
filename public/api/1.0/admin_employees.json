@@ -118,6 +118,27 @@
             },
             {
               "paramType": "query",
+              "name": "text",
+              "type": "string",
+              "description": "Text to search",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "position",
+              "type": "string",
+              "description": "Position text to search",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "experience",
+              "type": "integer",
+              "description": "Experience to search",
+              "required": false
+            },
+            {
+              "paramType": "query",
               "name": "limit",
               "type": "integer",
               "description": "Limit",

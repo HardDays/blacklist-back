@@ -7,6 +7,7 @@ class AdminVacanciesController < ApplicationController
   swagger_api :index do
     summary "Retrieve vacancies"
     param_list :query, :status, :string, :optional, "Status", [:added, :approved, :denied]
+    param :query, :text, :string, :optional, "Text to search"
     param :query, :limit, :integer, :optional, "Limit"
     param :query, :offset, :integer, :optional, "Offset"
     param :header, 'Authorization', :string, :required, 'Authentication token'
@@ -19,6 +20,7 @@ class AdminVacanciesController < ApplicationController
     if params[:status]
       @vacancies = @vacancies.where(status: Vacancy.statuses[params[:status]])
     end
+    search_text
 
     render json: {
       count: Vacancy.count,
@@ -92,6 +94,12 @@ class AdminVacanciesController < ApplicationController
 
     unless user
       render status: :forbidden and return
+    end
+  end
+
+  def search_text
+    if params[:text]
+      @vacancies = @vacancies.where("position ILIKE ?", "%#{params[:text]}%")
     end
   end
 end

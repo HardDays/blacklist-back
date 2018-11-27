@@ -89,6 +89,24 @@ RSpec.describe 'Admin vacancies API', type: :request do
       end
     end
 
+    context 'when search position' do
+      before do
+        post "/auth/login", params: { email: admin_user.email, password: password }
+        token = json['token']
+
+        get "/admin_vacancies", params: { text: vacancy.position}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(vacancy_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context 'when use limit' do
       before do
         post "/auth/login", params: { email: admin_user.email, password: password }
