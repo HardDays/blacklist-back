@@ -5,13 +5,27 @@
   "resourcePath": "employees",
   "apis": [
     {
+      "path": "/employees/dashboard.json",
+      "operations": [
+        {
+          "summary": "Retrieve last five employees",
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Employees#dashboard",
+          "method": "get"
+        }
+      ]
+    },
+    {
       "path": "/employees.json",
       "operations": [
         {
-          "summary": [
-            "Retrieve employees list",
-            "Retrieve last five employees"
-          ],
+          "summary": "Retrieve employees list",
           "parameters": [
             {
               "paramType": "query",
@@ -57,11 +71,6 @@
             }
           ],
           "responseMessages": [
-            {
-              "code": 200,
-              "responseModel": null,
-              "message": "Ok"
-            },
             {
               "code": 200,
               "responseModel": null,

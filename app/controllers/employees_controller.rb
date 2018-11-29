@@ -31,7 +31,7 @@ class EmployeesController < ApplicationController
   end
 
   # GET /employees/dashboard
-  swagger_api :index do
+  swagger_api :dashboard do
     summary "Retrieve last five employees"
     response :ok
   end
