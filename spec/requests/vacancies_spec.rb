@@ -165,6 +165,24 @@ RSpec.describe 'Vacancies API', type: :request do
   end
 
 
+  # Test suite for GET /vacancies/dashboard
+  describe 'GET /vacancies/dashboard' do
+    context 'when simply get' do
+      before do
+        get "/vacancies/dashboard"
+      end
+
+      it "return all approved employees" do
+        expect(json.size).to eq(3)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+  end
+
+
   # Test suite for GET /vacancies/:id
   describe 'GET /vacancies/:id' do
     context 'when the record exists' do

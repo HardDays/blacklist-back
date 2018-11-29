@@ -36,10 +36,16 @@ Rails.application.routes.draw do
     resources :jobs, only: [:create, :update]
     resources :employee_offers, only: [:index, :show, :create]
     resources :employee_comments, only: [:index, :create]
+    collection do
+      get :dashboard
+    end
   end
 
   resources :vacancies, only: [:index, :show] do
     resources :vacancy_responses, only: [:index, :create]
+    collection do
+      get :dashboard
+    end
   end
 
   resources :payments, only: [:create] do

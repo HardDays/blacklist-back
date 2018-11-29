@@ -149,6 +149,23 @@
       ]
     },
     {
+      "path": "/vacancies/dashboard.json",
+      "operations": [
+        {
+          "summary": "Retrieve five last vacancies",
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            }
+          ],
+          "nickname": "Vacancies#dashboard",
+          "method": "get"
+        }
+      ]
+    },
+    {
       "path": "/vacancies.json",
       "operations": [
         {

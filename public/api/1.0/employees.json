@@ -8,7 +8,10 @@
       "path": "/employees.json",
       "operations": [
         {
-          "summary": "Retrieve employees list",
+          "summary": [
+            "Retrieve employees list",
+            "Retrieve last five employees"
+          ],
           "parameters": [
             {
               "paramType": "query",
@@ -54,6 +57,11 @@
             }
           ],
           "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
             {
               "code": 200,
               "responseModel": null,

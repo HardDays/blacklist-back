@@ -6,6 +6,10 @@ RSpec.describe VacanciesController, type: :routing do
       expect(:get => "/vacancies").to route_to("vacancies#index")
     end
 
+    it "routes to #dashboard" do
+      expect(:get => "/vacancies/dashboard").to route_to("vacancies#dashboard")
+    end
+
     it "routes to #show" do
       expect(:get => "/vacancies/1").to route_to("vacancies#show", id: "1")
     end

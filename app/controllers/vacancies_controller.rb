@@ -28,6 +28,17 @@ class VacanciesController < ApplicationController
     }, short: true, status: :ok
   end
 
+  # GET /vacancies/dashboard
+  swagger_api :dashboard do
+    summary "Retrieve five last vacancies"
+    response :ok
+  end
+  def dashboard
+    @vacancies = Vacancy.approved.order(updated_at: :desc)
+
+    render json: @vacancies.limit(5), short: true, status: :ok
+  end
+
   # GET /vacancies/1
   swagger_api :show do
     summary "Retrieve vacancy info"

@@ -30,6 +30,17 @@ class EmployeesController < ApplicationController
     }, short: true, status: :ok
   end
 
+  # GET /employees/dashboard
+  swagger_api :index do
+    summary "Retrieve last five employees"
+    response :ok
+  end
+  def dashboard
+    @employees = Employee.approved
+
+    render json: @employees.limit(5), short: true, status: :ok
+  end
+
   # GET /employees/1
   swagger_api :show do
     summary "Get employee profile"

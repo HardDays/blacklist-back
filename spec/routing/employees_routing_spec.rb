@@ -6,6 +6,10 @@ RSpec.describe EmployeesController, type: :routing do
       expect(:get => "/employees").to route_to("employees#index")
     end
 
+    it "routes to #dashboard" do
+      expect(:get => "/employees/dashboard").to route_to("employees#dashboard")
+    end
+
     it "routes to #show" do
       expect(:get => "/employees/1").to route_to("employees#show", id: "1")
     end

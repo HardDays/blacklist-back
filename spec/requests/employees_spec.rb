@@ -337,6 +337,23 @@ RSpec.describe 'Employee API', type: :request do
     end
   end
 
+  # Test suite for GET /employees/dashboard
+  describe 'GET /employees/dashboard' do
+    context 'when simply get' do
+      before do
+        get "/employees/dashboard"
+      end
+
+      it "return all approved employees" do
+        expect(json.size).to eq(3)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+  end
+
 
   # Test suite for GET /employees/:id
   describe 'GET /employees/:id' do
