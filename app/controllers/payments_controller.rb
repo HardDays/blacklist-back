@@ -48,31 +48,32 @@ class PaymentsController < ApplicationController
   end
 
   def result
-    crc = Payment.get_hash(params['OutSum'],
-                           params['InvId'],
-                           ENV['MERCHANT_PASS_2'],
-                           "Shp_item=#{params['Shp_item']}")
-    @result = "FAIL"
-
-    begin
-      break if params['SignatureValue'].blank? || crc.casecmp(params['SignatureValue']) != 0
-
-      subscription = Subscription.where(:id => params['Shp_item']).first
-      break if subscription.blank?
-
-      payment = subscription.payments.where(status: "added").first
-      break if payment.price != params['OutSum'].to_f
-
-      ActiveRecord.Base::transaction do
-        payment.invid = params['InvId'].to_i
-        payment.status = "ok"
-        payment.save
-        subscription.last_payment_date = DateTime.now
-        subscription.save
-
-        @result = "OK#{params['InvId']}"
-      end
-    end while false
+    'OK'
+    # crc = Payment.get_hash(params['OutSum'],
+    #                        params['InvId'],
+    #                        ENV['MERCHANT_PASS_2'],
+    #                        "Shp_item=#{params['Shp_item']}")
+    # @result = "FAIL"
+    #
+    # begin
+    #   break if params['SignatureValue'].blank? || crc.casecmp(params['SignatureValue']) != 0
+    #
+    #   subscription = Subscription.where(:id => params['Shp_item']).first
+    #   break if subscription.blank?
+    #
+    #   payment = subscription.payments.where(status: "added").first
+    #   break if payment.price != params['OutSum'].to_f
+    #
+    #   ActiveRecord.Base::transaction do
+    #     payment.invid = params['InvId'].to_i
+    #     payment.status = "ok"
+    #     payment.save
+    #     subscription.last_payment_date = DateTime.now
+    #     subscription.save
+    #
+    #     @result = "OK#{params['InvId']}"
+    #   end
+    # end while false
   end
 
   private
