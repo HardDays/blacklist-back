@@ -79,24 +79,6 @@ class UsersController < ApplicationController
   end
 
   # TODO: remove
-  # POST /users/:id/pay
-  swagger_api :pay do
-    summary "Pay for user"
-    param :header, 'Authorization', :string, :required, 'Authentication token'
-    response :ok
-    response :unprocessable_entity
-  end
-  def pay
-    @user.is_payed = true
-
-    if @user.save
-      render status: :ok
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
-  end
-
-  # TODO: remove
   # POST /users/:id/make_admin
   swagger_api :make_admin do
     summary "Make user admin"

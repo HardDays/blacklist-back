@@ -22,8 +22,13 @@ module AuthorizationHelper
     tokenstr = request.headers['Authorization']
 
     token = Token.find_by(token: tokenstr)
-    if (token&.user&.is_payed and !token.user.is_blocked) or token&.user&.is_admin
+    if token&.user&.is_admin
       return token.user
+    elsif token and !token.user&.is_blocked
+      subscription = token.user.subscription
+      if subscription and subscription.last_payment_date >= 1.month.ago
+        return token.user
+      end
     end
   end
 

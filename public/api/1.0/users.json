@@ -112,37 +112,6 @@
       ]
     },
     {
-      "path": "/users/pay.json",
-      "operations": [
-        {
-          "summary": "Pay for user",
-          "parameters": [
-            {
-              "paramType": "header",
-              "name": "Authorization",
-              "type": "string",
-              "description": "Authentication token",
-              "required": true
-            }
-          ],
-          "responseMessages": [
-            {
-              "code": 200,
-              "responseModel": null,
-              "message": "Ok"
-            },
-            {
-              "code": 422,
-              "responseModel": null,
-              "message": "Unprocessable Entity"
-            }
-          ],
-          "nickname": "Users#pay",
-          "method": "post"
-        }
-      ]
-    },
-    {
       "path": "/users/make_admin.json",
       "operations": [
         {

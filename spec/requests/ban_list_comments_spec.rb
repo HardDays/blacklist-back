@@ -2,9 +2,10 @@ require 'rails_helper'
 
 RSpec.describe "BanListComments API", type: :request do
   let(:password) { "123123" }
-  let(:user)  { create(:user, password: password, is_payed: true) }
+  let(:user)  { create(:user, password: password) }
   let!(:item) { create(:ban_list, status: "approved") }
   let(:item_id) { item.id }
+  let!(:subscription) { create(:subscription, user_id: user.id, last_payment_date: DateTime.now)}
 
   let!(:comment) { create(:ban_list_comment, user_id: user.id, ban_list_id: item.id)}
   let!(:comment2) { create(:ban_list_comment, user_id: user.id, ban_list_id: item.id)}
@@ -97,8 +98,8 @@ RSpec.describe "BanListComments API", type: :request do
 
     context 'when user not payed' do
       before do
-        user.is_payed = false
-        user.save
+        subscription.last_payment_date = 1.month.ago - 1.day
+        subscription.save
 
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']
@@ -206,8 +207,8 @@ RSpec.describe "BanListComments API", type: :request do
 
     context 'when the user not payed' do
       before do
-        user.is_payed = false
-        user.save
+        subscription.last_payment_date = 1.month.ago - 1.day
+        subscription.save
 
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']

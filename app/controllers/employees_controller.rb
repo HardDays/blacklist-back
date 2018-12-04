@@ -126,7 +126,11 @@ class EmployeesController < ApplicationController
       elsif @user.id == params[:id].to_i
         @employee = @user.employee
       else
-        unless @user.is_payed
+        unless @user.subscription
+          render status: :forbidden and return
+        end
+
+        unless @user.subscription.last_payment_date >= 1.month.ago
           render status: :forbidden and return
         end
 

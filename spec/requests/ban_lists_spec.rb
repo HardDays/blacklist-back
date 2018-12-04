@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe "BanLists API", type: :request do
   let(:password) { "123123" }
-  let(:user)  { create(:user, password: password, is_payed: true) }
+  let(:user)  { create(:user, password: password) }
+  let!(:subscription) { create(:subscription, user_id: user.id, last_payment_date: DateTime.now)}
   let!(:item) { create(:ban_list, status: "approved") }
   let!(:item2) { create(:ban_list, status: "approved") }
   let!(:item3) { create(:ban_list, status: "approved") }
@@ -78,8 +79,8 @@ RSpec.describe "BanLists API", type: :request do
 
     context 'when user not payed' do
       before do
-        user.is_payed = false
-        user.save
+        subscription.last_payment_date = 1.month.ago - 1.day
+        subscription.save
 
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']
@@ -133,8 +134,8 @@ RSpec.describe "BanLists API", type: :request do
 
     context 'when user not payed' do
       before do
-        user.is_payed = false
-        user.save
+        subscription.last_payment_date = 1.month.ago - 1.day
+        subscription.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
@@ -258,8 +259,8 @@ RSpec.describe "BanLists API", type: :request do
 
     context 'when the user not payed' do
       before do
-        user.is_payed = false
-        user.save
+        subscription.last_payment_date = 1.month.ago - 1.day
+        subscription.save
 
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']

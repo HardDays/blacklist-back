@@ -3,7 +3,8 @@ require 'rails_helper'
 RSpec.describe 'Employee API', type: :request do
   let(:date_time) { Time.now }
   let(:password) { "123123" }
-  let!(:user)  { create(:user, password: password, is_payed: true) }
+  let!(:user)  { create(:user, password: password) }
+  let!(:subscription) { create(:subscription, user_id: user.id, last_payment_date: DateTime.now)}
   let!(:employee) { create(:employee, user_id: user.id, status: "approved") }
   let(:employee_id) { employee.user_id }
 
@@ -81,8 +82,8 @@ RSpec.describe 'Employee API', type: :request do
 
     context 'when search first_name unpayed' do
       before do
-        user.is_payed = false
-        user.save
+        subscription.last_payment_date = 1.month.ago - 1.day
+        subscription.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
@@ -121,8 +122,8 @@ RSpec.describe 'Employee API', type: :request do
 
     context 'when search second_name unpayed' do
       before do
-        user.is_payed = false
-        user.save
+        subscription.last_payment_date = 1.month.ago - 1.day
+        subscription.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
@@ -161,8 +162,8 @@ RSpec.describe 'Employee API', type: :request do
 
     context 'when search last_name unpayed' do
       before do
-        user.is_payed = false
-        user.save
+        subscription.last_payment_date = 1.month.ago - 1.day
+        subscription.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
@@ -201,8 +202,8 @@ RSpec.describe 'Employee API', type: :request do
 
     context 'when search position unpayed' do
       before do
-        user.is_payed = false
-        user.save
+        subscription.last_payment_date = 1.month.ago - 1.day
+        subscription.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
@@ -241,8 +242,8 @@ RSpec.describe 'Employee API', type: :request do
 
     context 'when search experience unpayed' do
       before do
-        user.is_payed = false
-        user.save
+        subscription.last_payment_date = 1.month.ago - 1.day
+        subscription.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
@@ -302,8 +303,8 @@ RSpec.describe 'Employee API', type: :request do
 
     context 'when user not payed' do
       before do
-        user.is_payed = false
-        user.save
+        subscription.last_payment_date = 1.month.ago - 1.day
+        subscription.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
@@ -415,9 +416,6 @@ RSpec.describe 'Employee API', type: :request do
 
     context 'when user not payed' do
       before do
-        user2.is_payed = false
-        user2.save
-
         post "/auth/login", params: { email: user2.email, password: password }
         token = json['token']
 
@@ -435,8 +433,8 @@ RSpec.describe 'Employee API', type: :request do
 
     context 'when i did not payed' do
       before do
-        user.is_payed = false
-        user.save
+        subscription.last_payment_date = 1.month.ago - 1.day
+        subscription.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
