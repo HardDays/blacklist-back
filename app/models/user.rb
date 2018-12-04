@@ -51,7 +51,7 @@ class User < ApplicationRecord
     end
 
     res[:is_payed] = false
-    if subscription
+    if subscription&.last_payment_date
       res[:is_payed] = subscription.last_payment_date >= 1.month.ago
     end
 
