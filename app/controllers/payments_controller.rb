@@ -74,7 +74,7 @@ class PaymentsController < ApplicationController
       end
     end while false
 
-    render @result, status: :ok
+    render text: @result, status: :ok
   end
 
   private
