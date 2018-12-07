@@ -56,7 +56,7 @@ class User < ApplicationRecord
     end
 
     if is_admin
-      rea[:is_payed] = true
+      res[:is_payed] = true
     end
 
     res
