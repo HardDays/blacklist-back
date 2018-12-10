@@ -26,7 +26,7 @@ module AuthorizationHelper
       return token.user
     elsif token and !token.user&.is_blocked
       subscription = token.user.subscription
-      if subscription and subscription.last_payment_date >= 1.month.ago
+      if subscription&.last_payment_date and subscription.last_payment_date >= 1.month.ago
         return token.user
       end
     end
