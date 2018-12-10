@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Subscription, type: :model do
+  it { should validate_uniqueness_of(:user_id) }
+
   it { should have_many(:payments) }
   it { should belong_to(:user) }
   it "should be deleted when delete user" do

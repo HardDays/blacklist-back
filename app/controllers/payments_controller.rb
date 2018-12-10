@@ -13,10 +13,16 @@ class PaymentsController < ApplicationController
   end
   def create
     ActiveRecord::Base.transaction do
-      subscription = Subscription.new(user_id: @user.id)
+      subscription = Subscription.find_or_create_by(user_id: @user.id)
 
       if subscription.save
-        payment = Payment.new(subscription_id: subscription.id, price: ENV['SUBSCRIPTION_PRICE'])
+
+        payment = Payment.where(subscription_id: subscription.id, updated_at: 1.month.ago..DateTime.now)
+        if payment and payment.status == 'ok'
+          render json: :ALREADY_PAYED, status: :ok
+        elsif not payment
+          payment = Payment.new(subscription_id: subscription.id, price: ENV['SUBSCRIPTION_PRICE'])
+        end
 
         if payment.save
 
