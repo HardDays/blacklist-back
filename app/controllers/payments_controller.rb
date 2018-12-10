@@ -17,7 +17,7 @@ class PaymentsController < ApplicationController
 
       if subscription.save
 
-        payment = Payment.where(subscription_id: subscription.id, updated_at: 1.month.ago..DateTime.now)
+        payment = Payment.where(subscription_id: subscription.id, updated_at: 1.month.ago..DateTime.now).first
         if payment and payment.status == 'ok'
           render json: :ALREADY_PAYED, status: :ok
         elsif not payment
