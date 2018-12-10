@@ -15,7 +15,7 @@ class EmployeeCommentsController < ApplicationController
     response :forbidden
   end
   def index
-    @comments = @user.employee_comments.all
+    @comments = @employee_user.employee_comments.all
 
     render json: {
       count: EmployeeComment.count,
@@ -47,8 +47,8 @@ class EmployeeCommentsController < ApplicationController
   private
   def set_employee
     begin
-      @user = User.find(params[:employee_id])
-      employee = @user.employee
+      @employee_user = User.find(params[:employee_id])
+      employee = @employee_user.employee
 
       unless employee&.status == "approved"
         render status: :not_found
