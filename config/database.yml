@@ -18,5 +18,11 @@ test:
   database: back_list_test
 
 production:
-  <<: *default
-  database: back_list_prod
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  timeout: 5000
+  username: postgres
+  password: ILr15Do30rN9rO2t
+  database: black_list
+  host:   /cloudsql/blacklistback:us-central1:blacklistback

@@ -42,3 +42,5 @@ end
 gem 'devise'
 gem 'swagger-docs'
 gem 'mini_magick'
+
+gem "appengine", "~> 0.4.6"
