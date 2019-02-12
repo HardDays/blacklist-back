@@ -242,22 +242,22 @@ RSpec.describe 'Vacancies API', type: :request do
       end
     end
 
-    context 'when user not payed' do
-      before do
-        post "/auth/login", params: { email: user2.email, password: password }
-        token = json['token']
-
-        get "/vacancies/#{vacancy_id}", headers: { 'Authorization': token }
-      end
-
-      it 'returns empty message' do
-        expect(response.body).to match("")
-      end
-
-      it 'returns status code 403' do
-        expect(response).to have_http_status(403)
-      end
-    end
+    # context 'when user not payed' do
+    #   before do
+    #     post "/auth/login", params: { email: user2.email, password: password }
+    #     token = json['token']
+    #
+    #     get "/vacancies/#{vacancy_id}", headers: { 'Authorization': token }
+    #   end
+    #
+    #   it 'returns empty message' do
+    #     expect(response.body).to match("")
+    #   end
+    #
+    #   it 'returns status code 403' do
+    #     expect(response).to have_http_status(403)
+    #   end
+    # end
 
     context 'when i did not payed' do
       before do

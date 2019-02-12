@@ -154,13 +154,13 @@ class VacanciesController < ApplicationController
     if @user.id == @vacancy.company.user_id
       return @vacancy
     else
-      unless @user.subscription
-        render status: :forbidden and return
-      end
-
-      unless @user.subscription.last_payment_date >= 1.month.ago
-        render status: :forbidden and return
-      end
+      # unless @user.subscription
+      #   render status: :forbidden and return
+      # end
+      #
+      # unless @user.subscription.last_payment_date >= 1.month.ago
+      #   render status: :forbidden and return
+      # end
 
       if @vacancy.status != "approved"
         render status: :not_found and return

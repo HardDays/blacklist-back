@@ -4,6 +4,10 @@
   "basePath": "https://blacklist-back.herokuapp.com",
   "apis": [
     {
+      "path": "/api/1.0/news.{format}",
+      "description": "News"
+    },
+    {
       "path": "/api/1.0/ban_lists.{format}",
       "description": "Black list"
     },
