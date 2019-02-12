@@ -268,12 +268,14 @@ RSpec.describe "BanLists API", type: :request do
         post "/black_list", params: employee_valid_params, headers: { 'Authorization': token }
       end
 
-      it 'returns status code 403' do
-        expect(response).to have_http_status(403)
+      it 'creates a response' do
+        expect(json['name']).to eq('Name')
+        expect(json['description']).to eq('Description')
+        expect(json['addresses']).to eq('Addresses')
       end
 
-      it 'response is empty' do
-        expect(response.body).to match("")
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
       end
     end
 

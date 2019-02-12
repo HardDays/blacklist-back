@@ -1,5 +1,6 @@
 class BanListsController < ApplicationController
-  before_action :auth_payed_user, only: [:index, :show, :create]
+  before_action :auth_payed_user, only: [:index, :show]
+  before_action :auth_user, only: [:create]
   before_action :set_ban_list, only: [:show]
   swagger_controller :ban_list, "Black list"
 
@@ -63,6 +64,15 @@ class BanListsController < ApplicationController
         end
       rescue
         render status: :not_found
+      end
+    end
+
+    # Use callbacks to share common setup or constraints between actions.
+    def auth_user
+      user = AuthorizationHelper.auth_user_without_id(request)
+
+      unless user
+        render status: :forbidden and return
       end
     end
 
