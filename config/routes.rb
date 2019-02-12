@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :security_requests
+  resources :security_files
   resources :news
   resources :ban_lists, path: 'black_list', only: [:index, :show, :create]
   get 'black_list/:black_list_id/black_list_comments', to: 'ban_list_comments#index'

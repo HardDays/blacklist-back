@@ -4,6 +4,14 @@
   "basePath": "https://blacklist-back.herokuapp.com",
   "apis": [
     {
+      "path": "/api/1.0/security_requests.{format}",
+      "description": "Security request"
+    },
+    {
+      "path": "/api/1.0/security_files.{format}",
+      "description": "Security file"
+    },
+    {
       "path": "/api/1.0/news.{format}",
       "description": "News"
     },
