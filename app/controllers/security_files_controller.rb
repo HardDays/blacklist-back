@@ -40,6 +40,10 @@ class SecurityFilesController < ApplicationController
     def set_security_file
       begin
         @security_file = SecurityFile.first
+
+        unless @security_file
+          render status: :not_found
+        end
       rescue
         render status: :not_found
       end
