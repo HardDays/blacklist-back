@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_12_163842) do
+ActiveRecord::Schema.define(version: 2019_02_13_175001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -113,14 +113,24 @@ ActiveRecord::Schema.define(version: 2019_02_12_163842) do
     t.integer "status", default: 0
     t.integer "invid"
     t.integer "price"
-    t.integer "subscription_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.integer "payment_type"
+    t.datetime "payment_date"
+    t.integer "security_file_id"
+    t.datetime "expires_at"
+  end
+
+  create_table "security_files", force: :cascade do |t|
+    t.string "base64"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "subscriptions", force: :cascade do |t|
+  create_table "security_requests", force: :cascade do |t|
+    t.string "base64"
     t.integer "user_id"
-    t.datetime "last_payment_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

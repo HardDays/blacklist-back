@@ -36,7 +36,6 @@ class SecurityRequestsController < ApplicationController
   # POST /security_requests
   swagger_api :create do
     summary "Upload file"
-    param :form, :user_id, :integer, :required, "User id"
     param :form, :base64, :string, :required, "Image base64 string"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
@@ -49,6 +48,10 @@ class SecurityRequestsController < ApplicationController
       file = SecurityRequest.new(base64: params[:base64])
       file.user_id = @user.id
       if file.save
+        payment = @payments.first
+        payment.security_file_id = file.id
+        payment.save
+
         render json: file, status: :ok
       else
         render json: file.errors, status: :unprocessable_entity
@@ -73,9 +76,19 @@ class SecurityRequestsController < ApplicationController
 
 
   def auth_user
-    @user = AuthorizationHelper.auth_user(request, params[:user_id])
+    @user = AuthorizationHelper.auth_user_with_payment_without_id(request)
 
     if @user == nil
+      render status: :forbidden and return
+    end
+
+    @payments = @user.payments.where(
+        payment_type: [Payment.payment_types['security_file']],
+        security_file_id: nil,
+        status: 'ok'
+    )
+
+    if @payments.count == 0
       render status: :forbidden and return
     end
   end

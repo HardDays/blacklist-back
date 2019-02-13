@@ -1,5 +1,6 @@
 class SecurityRequest < ApplicationRecord
   validates_presence_of :base64
+  validates_presence_of :user_id
 
   belongs_to :user
 

@@ -9,11 +9,12 @@ class User < ApplicationRecord
   belongs_to :image, dependent: :destroy, optional: true
   has_one :company, dependent: :destroy
   has_one :employee, dependent: :destroy
-  has_one :subscription, dependent: :destroy
   has_many :tokens, dependent: :destroy
   has_many :forgot_password_attempts, dependent: :destroy
   has_many :ban_list_comments, dependent: :destroy
   has_many :employee_comments, dependent: :destroy
+  has_many :security_requests, dependent: :destroy
+  has_many :payments, dependent: :destroy
 
   SALT = 'elite_salt'
 
@@ -51,9 +52,9 @@ class User < ApplicationRecord
     end
 
     res[:is_payed] = false
-    if subscription&.last_payment_date
-      res[:is_payed] = subscription.last_payment_date >= 1.month.ago
-    end
+    # if subscription&.last_payment_date
+    #   res[:is_payed] = subscription.last_payment_date >= 1.month.ago
+    # end
 
     if is_admin
       res[:is_payed] = true

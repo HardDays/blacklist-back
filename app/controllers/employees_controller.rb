@@ -126,11 +126,15 @@ class EmployeesController < ApplicationController
       elsif @user.id == params[:id].to_i
         @employee = @user.employee
       else
-        unless @user.subscription
-          render status: :forbidden and return
-        end
+        list_payments = @user.payments.where(
+            payment_type: [Payment.payment_types['employee_list_week'], Payment.payment_types['employee_list_month'],
+                           Payment.payment_types['employee_search']],
+            status: 'ok'
+        ).where(
+            "(expires_at >= :query)", query: DateTime.now
+        )
 
-        unless @user.subscription.last_payment_date >= 1.month.ago
+        if list_payments.count == 0
           render status: :forbidden and return
         end
 
@@ -138,7 +142,7 @@ class EmployeesController < ApplicationController
         @employee = user.employee
 
         if @employee.status != "approved"
-          render status: :not_found
+          render status: :not_found and return
         end
       end
     rescue
@@ -158,15 +162,27 @@ class EmployeesController < ApplicationController
 
   def auth_payed_user
     @is_filters_available = false
-    @user = AuthorizationHelper.auth_payed_user_without_id(request)
+    @user = AuthorizationHelper.auth_user_with_payment_without_id(request)
 
-    if @user == nil
-      user = AuthorizationHelper.auth_user_without_id(request)
+    unless @user
+      render status: :forbidden and return
+    end
 
-      if user == nil
+    filter_payment = @user.payments.where(
+        payment_type: Payment.payment_types['employee_search']
+    ).where(
+        "(expires_at >= :query)", query: DateTime.now
+    )
+
+    if filter_payment.count == 0
+      list_payments = @user.payments.where(
+          payment_type: [Payment.payment_types['employee_list_week'], Payment.payment_types['employee_list_month']]
+      ).where(
+          "(expires_at >= :query)", query: DateTime.now
+      )
+
+      if list_payments.count == 0
         render status: :forbidden and return
-      else
-        @user = user
       end
     else
       @is_filters_available = true

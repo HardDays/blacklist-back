@@ -1,6 +1,7 @@
 class VacanciesController < ApplicationController
-  before_action :authorize_user, only: [:create, :update]
-  before_action :set_company, only: [:create, :update]
+  before_action :authorize_user_with_payment, only: [:create]
+  before_action :authorize_user, only: [:update]
+  before_action :set_company, only: [:update]
   before_action :set_vacancy, only: [:update]
   before_action :auth_payed_user, only: [:index]
   before_action :auth_user_and_set_vacancy, only: [:show]
@@ -123,7 +124,7 @@ class VacanciesController < ApplicationController
 
   def auth_payed_user
     @is_filters_available = false
-    @user = AuthorizationHelper.auth_payed_user_without_id(request)
+    @user = AuthorizationHelper.auth_user_with_payment_without_id(request)
 
     if @user == nil
       user = AuthorizationHelper.auth_user_without_id(request)
@@ -134,7 +135,49 @@ class VacanciesController < ApplicationController
         @user = user
       end
     else
-      @is_filters_available = true
+      payments = @user.payments.where(
+          payment_type: [Payment.payment_types['standard'], Payment.payment_types['economy']]
+      ).where(
+          "(expires_at >= :query)", query: DateTime.now
+      )
+
+      unless payments.count == 0
+        @is_filters_available = true
+      end
+    end
+  end
+
+  def authorize_user_with_payment
+    @user = AuthorizationHelper.auth_user_with_payment_without_id(request)
+
+    unless @user
+      render status: :forbidden and return
+    end
+
+    @company = @user.company
+
+    unless @company
+      render status: :not_found
+    end
+
+    payments = @user.payments.where(
+        payment_type: Payment.payment_types['vacancies_4'],
+        status: 'ok'
+    )
+
+    if payments.count == 0
+      payments = @user.payments.where(
+          payment_type: Payment.payment_types['vacancies_5'],
+          status: 'ok'
+      )
+
+      if payments.count == 0
+        render status: :forbidden and return
+      end
+    else
+      if @company.vacancies.count >= 4
+        render status: :forbidden and return
+      end
     end
   end
 

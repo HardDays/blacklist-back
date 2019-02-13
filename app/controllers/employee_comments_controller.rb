@@ -60,11 +60,22 @@ class EmployeeCommentsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def auth_payed_user
-    @user = AuthorizationHelper.auth_payed_user_without_id(request)
+    @user = AuthorizationHelper.auth_user_with_payment_without_id(request)
 
     unless @user
       render status: :forbidden and return
     end
+
+    payments = @user.payments.where(
+        payment_type: [Payment.payment_types['standard'], Payment.payment_types['economy']],
+        status: 'ok'
+    ).where(
+        "(expires_at >= :query)", query: DateTime.now
+    )
+
+      if payments.count == 0
+        render status: :forbidden and return
+      end
   end
 
   # Only allow a trusted parameter "white list" through.

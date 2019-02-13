@@ -5,7 +5,7 @@ RSpec.describe "BanListComments API", type: :request do
   let(:user)  { create(:user, password: password) }
   let!(:item) { create(:ban_list, status: "approved") }
   let(:item_id) { item.id }
-  let!(:subscription) { create(:subscription, user_id: user.id, last_payment_date: DateTime.now)}
+  let!(:payment) { create(:payment, user_id: user.id, expires_at: DateTime.now + 1.day, payment_type: "standard", status: 'ok')}
 
   let!(:comment) { create(:ban_list_comment, user_id: user.id, ban_list_id: item.id)}
   let!(:comment2) { create(:ban_list_comment, user_id: user.id, ban_list_id: item.id)}
@@ -96,10 +96,53 @@ RSpec.describe "BanListComments API", type: :request do
       end
     end
 
-    context 'when user not payed' do
+    context 'when user payed economy' do
       before do
-        subscription.last_payment_date = 1.month.ago - 1.day
-        subscription.save
+        payment.payment_type = 'economy'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        get "/black_list/#{item_id}/black_list_comments", headers: { 'Authorization': token}
+      end
+
+      it "return only approved" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when user not payed standard' do
+      before do
+        payment.expires_at = DateTime.now() - 1.day
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        get "/black_list/#{item_id}/black_list_comments", headers: { 'Authorization': token}
+      end
+
+      it "returns nothing" do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when user not payed economy' do
+      before do
+        payment.payment_type = "economy"
+        payment.expires_at = DateTime.now() - 1.day
+        payment.save
 
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']
@@ -205,10 +248,53 @@ RSpec.describe "BanListComments API", type: :request do
       end
     end
 
-    context 'when the user not payed' do
+    context 'when the user payed economy' do
       before do
-        subscription.last_payment_date = 1.month.ago - 1.day
-        subscription.save
+        payment.payment_type = 'economy'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/black_list/#{item_id}/black_list_comments", params: like_valid_params, headers: { 'Authorization': token }
+      end
+
+      it 'creates a response' do
+        expect(json['user_id']).to eq(user.id)
+        expect(json['black_list_id']).to eq(item.id)
+        expect(json['text']).to eq('Text')
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when the user not payed economy' do
+      before do
+        payment.payment_type = 'economy'
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/black_list/#{item_id}/black_list_comments", params: like_valid_params, headers: { 'Authorization': token }
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'response is empty' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when the user not payed standard' do
+      before do
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
 
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']

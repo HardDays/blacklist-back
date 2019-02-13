@@ -4,17 +4,17 @@ RSpec.describe "EmployeeOffers", type: :request do
   let(:password) { "123123" }
 
   let!(:employee_user)  { create(:user, password: password) }
-  let!(:employee_subscription) { create(:subscription, user_id: employee_user.id, last_payment_date: DateTime.now)}
+  let!(:employee_payment) { create(:payment, user_id: employee_user.id, expires_at: DateTime.now + 1.day, payment_type: 'standard', status: 'ok')}
   let!(:employee) { create(:employee, user_id: employee_user.id) }
   let(:employee_id) { employee.user_id }
 
   let!(:employee_user2)  { create(:user, password: password) }
-  let!(:employee_subscription2) { create(:subscription, user_id: employee_user2.id, last_payment_date: DateTime.now)}
+  let!(:employee_payment2) { create(:payment, user_id: employee_user2.id, expires_at: DateTime.now + 1.day, payment_type: 'standard', status: 'ok')}
   let!(:employee2) { create(:employee, user_id: employee_user2.id) }
   let(:employee_id2) { employee2.user_id }
 
   let!(:company_user)  { create(:user, password: password) }
-  let!(:company_subscription) { create(:subscription, user_id: company_user.id, last_payment_date: DateTime.now)}
+  let!(:company_payment) { create(:payment, user_id: company_user.id, expires_at: DateTime.now + 1.day, payment_type: 'standard', status: 'ok')}
   let!(:company) { create(:company, user_id: company_user.id) }
   let(:company_id) { company.user_id }
 
@@ -84,12 +84,55 @@ RSpec.describe "EmployeeOffers", type: :request do
       end
     end
 
-    context 'when user not payed' do
+    context 'when user payed economy' do
       before do
-        employee_subscription.last_payment_date = 1.month.ago - 1.day
-        employee_subscription.save
+        employee_payment.payment_type = 'economy'
+        employee_payment.save
 
-        post "/auth/login", params: { email: employee_user.email, password: password }
+        post "/auth/login", params: { email: employee_user.email, password: password}
+        token = json['token']
+
+        get "/employees/#{employee_id}/employee_offers", params: { limit: 1 }, headers: { 'Authorization': token }
+      end
+
+      it "returns 1 employee offer" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(2)
+        expect(json['items'].size).to eq(1)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when user not payed standard' do
+      before do
+        employee_payment.expires_at = DateTime.now() - 1.day
+        employee_payment.save
+
+        post "/auth/login", params: { email: employee_user.email, password: password}
+        token = json['token']
+
+        get "/employees/#{employee_id}/employee_offers", headers: { 'Authorization': token }
+      end
+
+      it "return nothing" do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when user not payed economy' do
+      before do
+        employee_payment.payment_type = "economy"
+        employee_payment.expires_at = DateTime.now() - 1.day
+        employee_payment.save
+
+        post "/auth/login", params: { email: employee_user.email, password: password}
         token = json['token']
 
         get "/employees/#{employee_id}/employee_offers", headers: { 'Authorization': token }
@@ -172,12 +215,53 @@ RSpec.describe "EmployeeOffers", type: :request do
       end
     end
 
-    context 'when user not payed' do
+    context 'when user payed economy' do
       before do
-        employee_subscription.last_payment_date = 1.month.ago - 1.day
-        employee_subscription.save
+        employee_payment.payment_type = 'economy'
+        employee_payment.save
 
-        post "/auth/login", params: { email: employee_user.email, password: password }
+        post "/auth/login", params: { email: employee_user.email, password: password}
+        token = json['token']
+
+        get "/employees/#{employee_id}/employee_offers/#{employee_offer1.id}", headers: { 'Authorization': token }
+      end
+
+      it "return all employee offer" do
+        expect(json['id']).to match(employee_offer1.id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when user not payed standard' do
+      before do
+        employee_payment.expires_at = DateTime.now() - 1.day
+        employee_payment.save
+
+        post "/auth/login", params: { email: employee_user.email, password: password}
+        token = json['token']
+
+        get "/employees/#{employee_id}/employee_offers/#{employee_offer1.id}", headers: { 'Authorization': token }
+      end
+
+      it "return nothing" do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when user not payed economy' do
+      before do
+        employee_payment.payment_type = "economy"
+        employee_payment.expires_at = DateTime.now() - 1.day
+        employee_payment.save
+
+        post "/auth/login", params: { email: employee_user.email, password: password}
         token = json['token']
 
         get "/employees/#{employee_id}/employee_offers/#{employee_offer1.id}", headers: { 'Authorization': token }
@@ -318,10 +402,55 @@ RSpec.describe "EmployeeOffers", type: :request do
       end
     end
 
-    context 'when the user not payed' do
+    context 'when user payed economy' do
       before do
-        company_subscription.last_payment_date = 1.month.ago - 1.day
-        company_subscription.save
+        company_payment.payment_type = 'economy'
+        company_payment.save
+
+        post "/auth/login", params: { email: company_user.email, password: password}
+        token = json['token']
+
+        post "/employees/#{employee_id}/employee_offers", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'creates an offer' do
+        expect(json['description']).to eq('Description')
+        expect(json['position']).to eq('Position')
+        expect(json['employee_id']).to eq(employee_user.id)
+        expect(json['company_id']).to eq(company_user.id)
+        expect(employee.employee_offers).not_to be_nil
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when user not payed standard' do
+      before do
+        company_payment.expires_at = DateTime.now() - 1.day
+        company_payment.save
+
+        post "/auth/login", params: { email: company_user.email, password: password}
+        token = json['token']
+
+        post "/employees/#{employee_id}/employee_offers", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'returns empty message' do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when user not payed economy' do
+      before do
+        company_payment.payment_type = "economy"
+        company_payment.expires_at = DateTime.now() - 1.day
+        company_payment.save
 
         post "/auth/login", params: { email: company_user.email, password: password}
         token = json['token']

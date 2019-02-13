@@ -18,6 +18,34 @@
               "required": true
             },
             {
+              "paramType": "form",
+              "name": "payment_type",
+              "type": "string",
+              "description": "Payment type",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "employee_list_week",
+                  "employee_list_month",
+                  "vacancies_4",
+                  "vacancies_5",
+                  "employee_search",
+                  "standard",
+                  "economy",
+                  "banner",
+                  "security_file"
+                ]
+              }
+            },
+            {
+              "paramType": "form",
+              "name": "price",
+              "type": "integer",
+              "description": "Price",
+              "required": true
+            },
+            {
               "paramType": "header",
               "name": "Authorization",
               "type": "string",

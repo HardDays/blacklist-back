@@ -57,13 +57,6 @@
           "parameters": [
             {
               "paramType": "form",
-              "name": "user_id",
-              "type": "integer",
-              "description": "User id",
-              "required": true
-            },
-            {
-              "paramType": "form",
               "name": "base64",
               "type": "string",
               "description": "Image base64 string",

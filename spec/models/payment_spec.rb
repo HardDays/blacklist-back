@@ -1,12 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe Payment, type: :model do
-  it { should belong_to(:subscription) }
+  it { should validate_presence_of(:payment_type) }
+  it { should validate_presence_of(:user_id) }
+
+  it { should belong_to(:user) }
   it "should be deleted when delete user" do
     user = create(:user)
-    subscription = create(:subscription, user_id: user.id)
-    payment = create(:payment, subscription_id: subscription.id)
+    payment = create(:payment, user_id: user.id, payment_type: 'standard')
 
-    expect { subscription.destroy }.to change { Payment.count }.by(-1)
+    expect { user.destroy }.to change { Payment.count }.by(-1)
   end
 end

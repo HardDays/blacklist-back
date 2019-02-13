@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "BanLists API", type: :request do
   let(:password) { "123123" }
   let(:user)  { create(:user, password: password) }
-  let!(:subscription) { create(:subscription, user_id: user.id, last_payment_date: DateTime.now)}
+  let!(:payment) { create(:payment, user_id: user.id, expires_at: DateTime.now + 1.day, payment_type: 'standard', status: 'ok')}
   let!(:item) { create(:ban_list, status: "approved") }
   let!(:item2) { create(:ban_list, status: "approved") }
   let!(:item3) { create(:ban_list, status: "approved") }
@@ -77,10 +77,54 @@ RSpec.describe "BanLists API", type: :request do
       end
     end
 
-    context 'when user not payed' do
+    context 'when user payed economy' do
       before do
-        subscription.last_payment_date = 1.month.ago - 1.day
-        subscription.save
+        payment.payment_type = 'economy'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        get "/black_list", headers: { 'Authorization': token}
+      end
+
+      it "return only approved" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
+        expect(json['items'][0]['id']).to eq(item_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when user not payed standard' do
+      before do
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        get "/black_list", headers: { 'Authorization': token}
+      end
+
+      it "returns nothing" do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when user not payed economy' do
+      before do
+        payment.payment_type = 'economy'
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
 
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']
@@ -132,10 +176,52 @@ RSpec.describe "BanLists API", type: :request do
       end
     end
 
-    context 'when user not payed' do
+    context 'when the user payed economy' do
       before do
-        subscription.last_payment_date = 1.month.ago - 1.day
-        subscription.save
+        payment.payment_type = 'economy'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        get "/black_list/#{item_id}", headers: { 'Authorization': token }
+      end
+
+      it 'returns the item' do
+        expect(json).not_to be_empty
+        expect(json['id']).to eq(item_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when the user not payed standard' do
+      before do
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/black_list/#{item_id}", headers: { 'Authorization': token }
+      end
+
+      it 'returns empty message' do
+        expect(response.body).to match("")
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'when the user not payed economy' do
+      before do
+        payment.payment_type = 'economy'
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
@@ -257,10 +343,55 @@ RSpec.describe "BanLists API", type: :request do
       end
     end
 
-    context 'when the user not payed' do
+    context 'when the user payed economy' do
       before do
-        subscription.last_payment_date = 1.month.ago - 1.day
-        subscription.save
+        payment.payment_type = 'economy'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/black_list", params: employee_valid_params, headers: { 'Authorization': token }
+      end
+
+      it 'creates a response' do
+        expect(json['name']).to eq('Name')
+        expect(json['description']).to eq('Description')
+        expect(json['addresses']).to eq('Addresses')
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when the user not payed standard' do
+      before do
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/black_list", params: employee_valid_params, headers: { 'Authorization': token }
+      end
+
+      it 'creates a response' do
+        expect(json['name']).to eq('Name')
+        expect(json['description']).to eq('Description')
+        expect(json['addresses']).to eq('Addresses')
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when the user not payed economy' do
+      before do
+        payment.payment_type = 'economy'
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
 
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']

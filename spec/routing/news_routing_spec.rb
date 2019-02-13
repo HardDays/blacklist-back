@@ -15,10 +15,6 @@ RSpec.describe NewsController, type: :routing do
       expect(:post => "/news").to route_to("news#create")
     end
 
-    it "routes to #update via PUT" do
-      expect(:put => "/news/1").to route_to("news#update", :id => "1")
-    end
-
     it "routes to #update via PATCH" do
       expect(:patch => "/news/1").to route_to("news#update", :id => "1")
     end

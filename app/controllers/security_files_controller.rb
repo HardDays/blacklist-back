@@ -11,7 +11,8 @@ class SecurityFilesController < ApplicationController
     response :not_found
   end
   def show
-    send_data Base64.decode64(@security_file.base64.gsub(/^data:image\/[a-z]+;base64,/, '')), :type => 'image/png', :disposition => 'inline'
+    render json: {"base64": @security_file.base64 }, status: :ok
+    # send_data Base64.decode64(@security_file.base64.gsub(/^data:image\/[a-z]+;base64,/, '')), :type => 'image/png', :disposition => 'inline'
   end
 
   # POST /security_files
