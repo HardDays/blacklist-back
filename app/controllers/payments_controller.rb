@@ -34,7 +34,7 @@ class PaymentsController < ApplicationController
       payment = Payment.new(
           user_id: params[:user_id],
           price: price,
-          payment_type: payment_type
+          payment_type: params[:payment_type]
       )
       if payment.save
 
