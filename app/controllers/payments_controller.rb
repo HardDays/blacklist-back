@@ -17,7 +17,7 @@ class PaymentsController < ApplicationController
   def create
     ActiveRecord::Base.transaction do
       price = Payment.get_price(params[:payment_type])
-      unless price == params[:price]
+      unless price == params[:price].to_i
         render status: :forbidden and return
       end
 
