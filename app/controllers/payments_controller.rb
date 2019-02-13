@@ -21,7 +21,7 @@ class PaymentsController < ApplicationController
         render status: :forbidden and return
       end
 
-      if payment_type == 'employee_search'
+      if params[:payment_type] == 'employee_search'
         payments = @user.payments.where(
             payment_type: [Payment.payment_types['vacancies_5'], Payment.payment_types['vacancies_4']]
         )
