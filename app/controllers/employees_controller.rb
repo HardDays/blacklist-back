@@ -128,7 +128,8 @@ class EmployeesController < ApplicationController
       else
         list_payments = @user.payments.where(
             payment_type: [Payment.payment_types['employee_list_week'], Payment.payment_types['employee_list_month'],
-                           Payment.payment_types['employee_search']],
+                           Payment.payment_types['employee_search'], Payment.payment_types['standard'],
+                           Payment.payment_types['economy']],
             status: 'ok'
         ).where(
             "(expires_at >= :query)", query: DateTime.now
@@ -168,22 +169,25 @@ class EmployeesController < ApplicationController
       render status: :forbidden and return
     end
 
-    filter_payment = @user.payments.where(
-        payment_type: Payment.payment_types['employee_search']
+    # если оплачен пакет, то можно все
+    payments = @user.payments.where(
+        payment_type: [Payment.payment_types['standard'], Payment.payment_types['economy'],
+                       Payment.payment_types['employee_search']],
+        status: 'ok'
     ).where(
         "(expires_at >= :query)", query: DateTime.now
     )
+    if payments.count == 0
+        list_payments = @user.payments.where(
+            payment_type: [Payment.payment_types['employee_list_week'], Payment.payment_types['employee_list_month']],
+            status: 'ok'
+        ).where(
+            "(expires_at >= :query)", query: DateTime.now
+        )
 
-    if filter_payment.count == 0
-      list_payments = @user.payments.where(
-          payment_type: [Payment.payment_types['employee_list_week'], Payment.payment_types['employee_list_month']]
-      ).where(
-          "(expires_at >= :query)", query: DateTime.now
-      )
-
-      if list_payments.count == 0
-        render status: :forbidden and return
-      end
+        if list_payments.count == 0
+          render status: :forbidden and return
+        end
     else
       @is_filters_available = true
     end

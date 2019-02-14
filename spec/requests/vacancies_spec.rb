@@ -4,8 +4,8 @@ RSpec.describe 'Vacancies API', type: :request do
   let(:date_time) { Time.now }
   let(:password) { "123123" }
   let!(:user)  { create(:user, password: password) }
-  let!(:payment1) { create(:payment, user_id: user.id, payment_type: 'vacancies_5', status: 'ok')}
-  let!(:payment2) { create(:payment, user_id: user.id, expires_at: DateTime.now + 1.day, payment_type: 'standard', status: 'ok')}
+  let!(:payment) { create(:payment, user_id: user.id, expires_at: DateTime.now + 1.day,
+                          payment_type: 'standard', status: 'ok', payment_date: DateTime.now)}
   let!(:company) { create(:company, user_id: user.id) }
   let(:company_id) { company.user_id }
   let!(:vacancy) { create(:vacancy, company_id: company.id, status: "approved") }
@@ -18,9 +18,9 @@ RSpec.describe 'Vacancies API', type: :request do
   let!(:vacancy2) { create(:vacancy, company_id: company.id, status: "approved") }
   let(:vacancy_id2) { vacancy2.id }
 
-  let!(:vacancy3) { create(:vacancy, company_id: company.id, status: "approved") }
+  let!(:vacancy3) { create(:vacancy, company_id: company2.id, status: "approved") }
   let!(:vacancy4) { create(:vacancy, company_id: company2.id, status: "denied") }
-  let!(:vacancy5) { create(:vacancy, company_id: company.id, status: "added") }
+  let!(:vacancy5) { create(:vacancy, company_id: company2.id, status: "added") }
 
   let(:valid_attributes) { {  company_id: company_id, position: "Position", min_experience: 1,
                               salary: 120, description: "Description" } }
@@ -70,8 +70,8 @@ RSpec.describe 'Vacancies API', type: :request do
 
     context 'when search position economy' do
       before do
-        payment2.payment_type = 'economy'
-        payment2.save
+        payment.payment_type = 'economy'
+        payment.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
@@ -91,8 +91,8 @@ RSpec.describe 'Vacancies API', type: :request do
 
     context 'when unpayed search position standard' do
       before do
-        payment2.expires_at = DateTime.now - 1.day
-        payment2.save
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
@@ -113,9 +113,9 @@ RSpec.describe 'Vacancies API', type: :request do
 
     context 'when unpayed search position economy' do
       before do
-        payment2.payment_type = 'economy'
-        payment2.expires_at = DateTime.now - 1.day
-        payment2.save
+        payment.payment_type = 'economy'
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
@@ -175,8 +175,8 @@ RSpec.describe 'Vacancies API', type: :request do
 
     context 'when user not payed and request without searching' do
       before do
-        payment2.expires_at = DateTime.now - 1.day
-        payment2.save
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
 
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
@@ -421,8 +421,208 @@ RSpec.describe 'Vacancies API', type: :request do
 
     context 'when not payed' do
       before do
-        payment1.status = 'added'
-        payment1.save
+        payment.status = 'added'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/companies/#{company_id}/vacancies", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when payments expired' do
+      before do
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/companies/#{company_id}/vacancies", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when standard out of number' do
+      before do
+        vacancy3.company_id = company.id
+        vacancy3.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/companies/#{company_id}/vacancies", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when vacancy created earlier' do
+      before do
+        vacancy3.company_id = company.id
+        vacancy3.save
+        payment.save
+        vacancy.created_at = DateTime.now - 1.day
+        vacancy.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/companies/#{company_id}/vacancies", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'creates an vacancy' do
+        expect(json['position']).to eq('Position')
+        expect(json['description']).to eq('Description')
+        expect(json['salary']).to eq(120)
+        expect(json['min_experience']).to eq(1)
+        expect(json['company_id']).to eq(user.id)
+        expect(company.vacancies).not_to be_nil
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when the request is valid and payed economy' do
+      before do
+        vacancy2.company_id = company2.id
+        vacancy2.save
+        vacancy.company_id = company2.id
+        vacancy.save
+        payment.payment_type = 'economy'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/companies/#{company_id}/vacancies", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'creates an vacancy' do
+        expect(json['position']).to eq('Position')
+        expect(json['description']).to eq('Description')
+        expect(json['salary']).to eq(120)
+        expect(json['min_experience']).to eq(1)
+        expect(json['company_id']).to eq(user.id)
+        expect(company.vacancies).not_to be_nil
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when vacancies created earlier: economy' do
+      before do
+        payment.payment_type = 'economy'
+        payment.save
+        vacancy2.company_id = company2.id
+        vacancy2.save
+        vacancy.created_at = DateTime.now - 1.day
+        vacancy.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/companies/#{company_id}/vacancies", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'creates an vacancy' do
+        expect(json['position']).to eq('Position')
+        expect(json['description']).to eq('Description')
+        expect(json['salary']).to eq(120)
+        expect(json['min_experience']).to eq(1)
+        expect(json['company_id']).to eq(user.id)
+        expect(company.vacancies).not_to be_nil
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when not payed' do
+      before do
+        vacancy2.company_id = company2.id
+        vacancy2.save
+        vacancy.company_id = company2.id
+        vacancy.save
+        payment.payment_type = 'economy'
+        payment.status = 'added'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/companies/#{company_id}/vacancies", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when payments expired' do
+      before do
+        vacancy2.company_id = company2.id
+        vacancy2.save
+        vacancy.company_id = company2.id
+        vacancy.save
+        payment.payment_type = 'economy'
+        payment.expires_at = DateTime.now - 1.day
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/companies/#{company_id}/vacancies", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'returns status code 403' do
+        expect(response).to have_http_status(403)
+      end
+
+      it 'returns a validation failure message' do
+        expect(response.body).to match("")
+      end
+    end
+
+    context 'when economy out of number' do
+      before do
+        payment.payment_type = 'economy'
+        payment.save
+        vacancy2.company_id = company.id
+        vacancy2.save
+        vacancy.company_id = company.id
+        vacancy.save
 
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']
@@ -441,8 +641,12 @@ RSpec.describe 'Vacancies API', type: :request do
 
     context 'when out of number' do
       before do
-        payment1.payment_type = 'vacancies_4'
-        payment1.save
+        vacancy3.company_id = company.id
+        vacancy3.save
+        vacancy4.company_id = company.id
+        vacancy4.save
+        payment.payment_type = 'vacancies_4'
+        payment.save
 
         post "/auth/login", params: { email: user.email, password: password}
         token = json['token']
@@ -456,6 +660,61 @@ RSpec.describe 'Vacancies API', type: :request do
 
       it 'returns a validation failure message' do
         expect(response.body).to match("")
+      end
+    end
+
+    context 'when vacancies created earlier' do
+      before do
+        payment.payment_type = 'vacancies_4'
+        payment.save
+        vacancy3.company_id = company.id
+        vacancy3.save
+        vacancy4.company_id = company.id
+        vacancy4.created_at = DateTime.now - 1.day
+        vacancy4.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/companies/#{company_id}/vacancies", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'creates an vacancy' do
+        expect(json['position']).to eq('Position')
+        expect(json['description']).to eq('Description')
+        expect(json['salary']).to eq(120)
+        expect(json['min_experience']).to eq(1)
+        expect(json['company_id']).to eq(user.id)
+        expect(company.vacancies).not_to be_nil
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when payed vacancy 5' do
+      before do
+        payment.payment_type = 'vacancies_5'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password}
+        token = json['token']
+
+        post "/companies/#{company_id}/vacancies", params: valid_attributes, headers: { 'Authorization': token }
+      end
+
+      it 'creates an vacancy' do
+        expect(json['position']).to eq('Position')
+        expect(json['description']).to eq('Description')
+        expect(json['salary']).to eq(120)
+        expect(json['min_experience']).to eq(1)
+        expect(json['company_id']).to eq(user.id)
+        expect(company.vacancies).not_to be_nil
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
       end
     end
 

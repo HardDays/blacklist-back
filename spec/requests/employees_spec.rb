@@ -80,6 +80,48 @@ RSpec.describe 'Employee API', type: :request do
       end
     end
 
+    context 'when search first_name and payed standard' do
+      before do
+        payment.payment_type = 'standard'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { text: employee.first_name}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search first_name and payed economy' do
+      before do
+        payment.payment_type = 'economy'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { text: employee.first_name}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context 'when search first_name and payed week' do
       before do
         payment.payment_type = 'employee_list_week'
@@ -160,6 +202,48 @@ RSpec.describe 'Employee API', type: :request do
       end
     end
 
+    context 'when search second_name and payed standard' do
+      before do
+        payment.payment_type = 'standard'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { text: employee.second_name }, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search second_name and payed economy' do
+      before do
+        payment.payment_type = 'economy'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { text: employee.second_name }, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context 'when search second_name and payed week' do
       before do
         payment.payment_type = 'employee_list_week'
@@ -224,6 +308,48 @@ RSpec.describe 'Employee API', type: :request do
 
     context 'when search last_name' do
       before do
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { text: employee.last_name}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search last_name and payed standard' do
+      before do
+        payment.payment_type = 'standard'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { text: employee.last_name}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search last_name and payed economy' do
+      before do
+        payment.payment_type = 'economy'
+        payment.save
+
         post "/auth/login", params: { email: user.email, password: password }
         token = json['token']
 
@@ -341,6 +467,48 @@ RSpec.describe 'Employee API', type: :request do
       end
     end
 
+    context 'when search position and payed standard' do
+      before do
+        payment.payment_type = 'standard'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { position: employee.position}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search position and payed economy' do
+      before do
+        payment.payment_type = 'economy'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { position: employee.position}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context 'when search position and payed month' do
       before do
         payment.payment_type = 'employee_list_month'
@@ -403,6 +571,48 @@ RSpec.describe 'Employee API', type: :request do
     context 'when search experience and payed week' do
       before do
         payment.payment_type = 'employee_list_week'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { experience: employee.experience}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search experience and payed standard' do
+      before do
+        payment.payment_type = 'standard'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", params: { experience: employee.experience}, headers: { 'Authorization': token }
+      end
+
+      it "returns employee" do
+        expect(json['count']).to eq(3)
+        expect(json['items'][0]['id']).to eq(employee_id)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when search experience and payed economy' do
+      before do
+        payment.payment_type = 'economy'
         payment.save
 
         post "/auth/login", params: { email: user.email, password: password }
@@ -501,7 +711,7 @@ RSpec.describe 'Employee API', type: :request do
       end
     end
 
-    context 'when search payed week' do
+    context 'when payed week' do
       before do
         payment.payment_type = 'employee_list_week'
         payment.save
@@ -523,9 +733,53 @@ RSpec.describe 'Employee API', type: :request do
       end
     end
 
-    context 'when search payed month' do
+    context 'when payed month' do
       before do
         payment.payment_type = 'employee_list_month'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", headers: { 'Authorization': token }
+      end
+
+      it "return all approved employees" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when payed standard' do
+      before do
+        payment.payment_type = 'standard'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees", headers: { 'Authorization': token }
+      end
+
+      it "return all approved employees" do
+        expect(json).not_to be_empty
+        expect(json['count']).to eq(3)
+        expect(json['items'].size).to eq(3)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when payed economy' do
+      before do
+        payment.payment_type = 'economy'
         payment.save
 
         post "/auth/login", params: { email: user.email, password: password }
@@ -680,6 +934,48 @@ RSpec.describe 'Employee API', type: :request do
     context 'when payed month' do
       before do
         payment.payment_type = 'employee_list_month'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees/#{employee_id2}", headers: { 'Authorization': token }
+      end
+
+      it 'returns the employee' do
+        expect(json).not_to be_empty
+        expect(json['id']).to eq(employee_id2)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when payed standard' do
+      before do
+        payment.payment_type = 'standard'
+        payment.save
+
+        post "/auth/login", params: { email: user.email, password: password }
+        token = json['token']
+
+        get "/employees/#{employee_id2}", headers: { 'Authorization': token }
+      end
+
+      it 'returns the employee' do
+        expect(json).not_to be_empty
+        expect(json['id']).to eq(employee_id2)
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when payed economy' do
+      before do
+        payment.payment_type = 'economy'
         payment.save
 
         post "/auth/login", params: { email: user.email, password: password }

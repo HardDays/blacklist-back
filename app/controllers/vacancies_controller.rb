@@ -136,7 +136,8 @@ class VacanciesController < ApplicationController
       end
     else
       payments = @user.payments.where(
-          payment_type: [Payment.payment_types['standard'], Payment.payment_types['economy']]
+          payment_type: [Payment.payment_types['standard'], Payment.payment_types['economy']],
+          status: 'ok'
       ).where(
           "(expires_at >= :query)", query: DateTime.now
       )
@@ -160,24 +161,48 @@ class VacanciesController < ApplicationController
       render status: :not_found
     end
 
-    payments = @user.payments.where(
+    is_payed = false
+
+    # стандарт - 3 вакансии
+    payment = @user.payments.where(
+        payment_type: Payment.payment_types['standard'],
+        status: 'ok'
+    ).where(
+        "(expires_at >= :query)", query: DateTime.now
+    ).order(payment_date: :desc).first
+    if payment and @company.vacancies.where("(created_at >= :query)", query: payment.payment_date).count < 3
+      is_payed = true
+    end
+
+    # эконом - 1 вакансия
+    payment = @user.payments.where(
+        payment_type: Payment.payment_types['economy'],
+        status: 'ok'
+    ).where(
+        "(expires_at >= :query)", query: DateTime.now
+    ).order(payment_date: :desc).first
+    if payment and @company.vacancies.where("(created_at >= :query)", query: payment.payment_date).count < 1
+      is_payed = true
+    end
+
+    payment = @user.payments.where(
         payment_type: Payment.payment_types['vacancies_4'],
         status: 'ok'
-    )
+    ).order(payment_date: :desc).first
+    if payment and @company.vacancies.where("(created_at >= :query)", query: payment.payment_date).count < 4
+      is_payed = true
+    end
 
-    if payments.count == 0
-      payments = @user.payments.where(
-          payment_type: Payment.payment_types['vacancies_5'],
-          status: 'ok'
-      )
+    payment = @user.payments.where(
+        payment_type: Payment.payment_types['vacancies_5'],
+        status: 'ok'
+    ).order(payment_date: :desc).first
+    if payment
+      is_payed = true
+    end
 
-      if payments.count == 0
-        render status: :forbidden and return
-      end
-    else
-      if @company.vacancies.count >= 4
-        render status: :forbidden and return
-      end
+    unless is_payed
+      render status: :forbidden and return
     end
   end
 
