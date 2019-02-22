@@ -24,6 +24,8 @@ class CompaniesController < ApplicationController
     param :form, :description, :string, :optional, "Company description"
     param :form, :contacts, :string, :optional, "Company contacts"
     param :form, :address, :string, :optional, "Company address"
+    param :form, :kitchen, :string, :optional, "Company kitchen"
+    param :form, :work_time, :string, :optional, "Company work time"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :forbidden
@@ -48,6 +50,7 @@ class CompaniesController < ApplicationController
     param :form, :description, :string, :optional, "Company description"
     param :form, :contacts, :string, :optional, "Company contacts"
     param :form, :address, :string, :optional, "Company address"
+    param :form, :work_time, :string, :optional, "Company work time"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
     response :not_found
@@ -80,6 +83,6 @@ class CompaniesController < ApplicationController
   end
 
   def company_params
-    params.permit(:name, :description, :contacts, :address)
+    params.permit(:name, :description, :contacts, :address, :kitchen, :work_time)
   end
 end
