@@ -46,6 +46,20 @@
               "required": false
             },
             {
+              "paramType": "form",
+              "name": "kitchen",
+              "type": "string",
+              "description": "Company kitchen",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "work_time",
+              "type": "string",
+              "description": "Company work time",
+              "required": false
+            },
+            {
               "paramType": "header",
               "name": "Authorization",
               "type": "string",
@@ -157,6 +171,20 @@
               "name": "address",
               "type": "string",
               "description": "Company address",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "kitchen",
+              "type": "string",
+              "description": "Company kitchen",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "work_time",
+              "type": "string",
+              "description": "Company work time",
               "required": false
             },
             {

@@ -50,6 +50,7 @@ class CompaniesController < ApplicationController
     param :form, :description, :string, :optional, "Company description"
     param :form, :contacts, :string, :optional, "Company contacts"
     param :form, :address, :string, :optional, "Company address"
+    param :form, :kitchen, :string, :optional, "Company kitchen"
     param :form, :work_time, :string, :optional, "Company work time"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
