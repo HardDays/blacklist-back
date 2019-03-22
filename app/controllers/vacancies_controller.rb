@@ -59,6 +59,7 @@ class VacanciesController < ApplicationController
     param :form, :position, :string, :required, "Position"
     param :form, :min_experience, :integer, :optional, "Minimal experience needed"
     param :form, :salary, :string, :optional, "Salary"
+    param :form, :address, :address, :optional, "Address"
     param :form, :description, :string, :required, "Description"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
@@ -84,6 +85,7 @@ class VacanciesController < ApplicationController
     param :form, :position, :string, :optional, "Position"
     param :form, :min_experience, :integer, :optional, "Minimal experience needed"
     param :form, :salary, :string, :optional, "Salary"
+    param :form, :address, :address, :optional, "Address"
     param :form, :description, :string, :optional, "Description"
     param :header, 'Authorization', :string, :required, 'Authentication token'
     response :ok
@@ -243,6 +245,6 @@ class VacanciesController < ApplicationController
   end
 
   def vacancy_params
-    params.permit(:position, :min_experience, :salary, :description)
+    params.permit(:position, :min_experience, :salary, :description, :address)
   end
 end

@@ -40,6 +40,13 @@
             },
             {
               "paramType": "form",
+              "name": "address",
+              "type": "address",
+              "description": "Address",
+              "required": false
+            },
+            {
+              "paramType": "form",
               "name": "description",
               "type": "string",
               "description": "Description",
@@ -114,6 +121,13 @@
               "name": "salary",
               "type": "string",
               "description": "Salary",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "address",
+              "type": "address",
+              "description": "Address",
               "required": false
             },
             {
