@@ -95,7 +95,7 @@
               "paramType": "path",
               "name": "id",
               "type": "integer",
-              "description": "Image id",
+              "description": "User id",
               "required": true
             }
           ],

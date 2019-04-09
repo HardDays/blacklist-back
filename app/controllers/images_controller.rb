@@ -4,13 +4,18 @@ class ImagesController < ApplicationController
 
   swagger_api :show do
     summary "Get full image"
-    param :path, :id, :integer, :required, "Image id"
+    param :path, :id, :integer, :required, "User id"
     response :not_found
   end
   def show
     begin
-      image = Image.find(params[:id])
+      user = User.find(params[:id])
     rescue
+      render status: :not_found and return
+    end
+
+    image = user.image
+    unless image
       render status: :not_found and return
     end
 
