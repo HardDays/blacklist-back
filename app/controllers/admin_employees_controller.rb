@@ -28,7 +28,7 @@ class AdminEmployeesController < ApplicationController
 
     render json: {
       count: Employee.count,
-      items: @employees.limit(params[:limit]).offset(params[:offset])
+      items: @employees.order(id: :desc).limit(params[:limit]).offset(params[:offset])
     }, short: true, status: :ok
   end
 

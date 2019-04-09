@@ -35,7 +35,7 @@ class Employee < ApplicationRecord
       return attrs
     end
 
-    res[:jobs] = jobs
+    res[:jobs] = jobs.order(id: :desc)
 
     res
   end

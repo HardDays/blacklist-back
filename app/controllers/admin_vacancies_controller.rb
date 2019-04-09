@@ -24,7 +24,7 @@ class AdminVacanciesController < ApplicationController
 
     render json: {
       count: Vacancy.count,
-      items: @vacancies.limit(params[:limit]).offset(params[:offset])
+      items: @vacancies.order(id: :desc).limit(params[:limit]).offset(params[:offset])
     }, short: true, status: :ok
   end
 

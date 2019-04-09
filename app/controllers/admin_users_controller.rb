@@ -17,7 +17,7 @@ class AdminUsersController < ApplicationController
 
     render json: {
       count: User.count,
-      items: @users.limit(params[:limit]).offset(params[:offset])
+      items: @users.order(id: :desc).limit(params[:limit]).offset(params[:offset])
     }, status: :ok
   end
 
