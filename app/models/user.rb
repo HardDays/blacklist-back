@@ -62,6 +62,8 @@ class User < ApplicationRecord
       )
       if valid_payments.count > 0
         res[:is_payed_everything] = true
+        res[:is_payed_employee_list] = true
+        res[:is_payed_employee_search] = true
       else
         res[:is_payed_everything] = false
       end
@@ -105,6 +107,7 @@ class User < ApplicationRecord
           "(expires_at >= :query)", query: DateTime.now
       )
       if valid_payments.count > 0
+        res[:is_payed_employee_list] = true
         res[:is_payed_employee_search] = true
       else
         res[:is_payed_employee_search] = false
@@ -115,6 +118,10 @@ class User < ApplicationRecord
 
     if is_admin
       res[:is_payed] = true
+      res[:is_payed_everything] = true
+      res[:is_payed_employee_list] = true
+      res[:is_payed_employee_search] = true
+      res[:is_payed_vacancies] = true
     end
 
     res
